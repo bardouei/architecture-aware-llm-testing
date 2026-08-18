@@ -1,0 +1,30 @@
+{
+    "components": [
+        {
+            "name": "DefaultUserRepository",
+            "type": "class",
+            "file": "DefaultUserRepository.swift",
+            "dependencies": []
+        },
+        {
+            "name": "DefaultLoginUseCase",
+            "type": "class",
+            "file": "DefaultLoginUseCase.swift",
+            "dependencies": [
+                "UserRepository"
+            ]
+        },
+        {
+            "name": "LoginViewModel",
+            "type": "class",
+            "file": "LoginViewModel.swift",
+            "dependencies": [
+                "LoginUseCase"
+            ]
+        }
+    ],
+    "protocols": [
+        "UserRepository",
+        "LoginUseCase"
+    ]
+}
