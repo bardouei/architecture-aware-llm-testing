@@ -1,0 +1,292 @@
+# Experiment Design
+
+
+## 1. Overview
+
+This section describes the experimental methodology designed to evaluate the effectiveness of the proposed Architecture-Aware Context Engineering framework for LLM-based unit test generation.
+
+The primary objective of the experiment is to investigate whether providing structured architectural context improves the quality and reliability of generated unit tests compared to traditional code-only prompting approaches.
+
+The experiment compares two different test generation strategies:
+
+1. Baseline approach: LLM-based test generation using only source code.
+2. Proposed approach: LLM-based test generation using source code combined with architecture-aware context.
+
+
+The experiment is designed to answer the following research questions.
+
+
+---
+
+# 2. Research Questions
+
+
+## RQ1: Does architecture-aware context improve the compilability of generated unit tests?
+
+Generated tests must be syntactically correct and compatible with the target project environment.
+
+This research question evaluates whether architectural context helps LLMs generate tests that successfully compile.
+
+
+Measurement:
+
+- Compilation success rate
+- Number of generated tests requiring manual correction
+
+
+---
+
+## RQ2: Does architecture-aware context improve generated test correctness?
+
+This question evaluates whether generated tests correctly verify the intended behavior of software components.
+
+Measurement:
+
+- Test execution success
+- Passing test cases
+- Failure detection capability
+
+
+---
+
+## RQ3: Does architectural context improve dependency mocking accuracy?
+
+Modern modular systems frequently depend on protocols, interfaces, or abstractions.
+
+This research question evaluates whether architecture-aware context improves the ability of LLMs to generate appropriate mocks.
+
+Measurement:
+
+- Correct identification of mockable dependencies
+- Protocol-based mock generation
+- Avoidance of unnecessary concrete dependency instantiation
+
+
+Example:
+
+
+Without architecture context:
+
+```swift
+let repository = DefaultUserRepository()
+With architecture context:
+final class MockUserRepository: UserRepository {
+
+}
+RQ4: Does architecture-aware context improve architectural compliance of generated tests?
+Generated tests should preserve the architectural principles of the original system.
+This question evaluates whether generated tests respect:
+dependency inversion,
+abstraction boundaries,
+modular separation,
+layer responsibilities.
+Measurement:
+Manual and automated architectural compliance analysis.
+3. Experimental Setup
+3.1 Target Software Systems
+The evaluation dataset consists of modular software projects with different architectural characteristics.
+The initial prototype evaluation uses Swift-based applications because Swift applications commonly employ:
+MVVM,
+Clean Architecture,
+VIPER,
+The Composable Architecture (TCA),
+modular feature-based structures.
+The dataset will contain:
+open-source Swift projects,
+internally developed benchmark applications,
+synthetic modular applications for controlled experiments.
+Each project must contain:
+production source code,
+existing unit tests,
+architectural dependencies,
+modular structure.
+4. Dataset Strategy
+The dataset is divided into multiple categories.
+Category A: Controlled Benchmark Applications
+Small applications created specifically for evaluation.
+Purpose:
+controlled dependency structures,
+known architectural patterns,
+deterministic evaluation.
+Example:
+Feature Module
+
+    LoginViewModel
+
+          |
+          v
+
+Domain Module
+
+    LoginUseCase
+
+          |
+          v
+
+Data Module
+
+    UserRepository
+Category B: Open Source Modular Applications
+Real-world applications collected from public repositories.
+Selection criteria:
+modular architecture,
+available tests,
+Swift package or Xcode project structure,
+active development.
+Category C: Architecture Diversity
+The dataset should include multiple architectural patterns:
+Architecture	Example
+MVVM	ViewModel based systems
+Clean Architecture	Layered Domain/Data/Presentation
+VIPER	Module-based systems
+TCA	Reducer and dependency driven systems
+
+
+The goal is to evaluate whether the proposed framework can generalize beyond a single architecture.
+5. Experimental Conditions
+Two experimental conditions are compared.
+Condition A: Code-Only Prompting (Baseline)
+Input:
+Source Code
+Pipeline:
+Source Code
+
+      |
+
+      v
+
+LLM
+
+      |
+
+      v
+
+Generated Unit Test
+The LLM receives no additional architectural information.
+Condition B: Architecture-Aware Prompting (Proposed)
+Input:
+Source Code
+
++
+
+Architecture Context
+Pipeline:
+Source Code
+
+        +
+
+Architecture Context
+
+        |
+
+        v
+
+LLM
+
+        |
+
+        v
+
+Generated Unit Test
+The provided context includes:
+component responsibility,
+architectural layer,
+dependency graph,
+protocol relationships,
+concrete implementations,
+mocking strategy,
+concurrency requirements.
+6. LLM Configuration
+The experiment evaluates the framework using modern code-capable LLMs.
+Potential models include:
+GPT-based models,
+Claude-based models,
+open-source code LLMs.
+For fair comparison:
+The same model, temperature, and generation parameters are used for both conditions.
+7. Evaluation Metrics
+7.1 Compilation Success Rate
+Measures whether generated tests can compile successfully without modification.
+Formula:
+Compilation Rate =
+
+Compiled Generated Tests /
+Total Generated Tests
+7.2 Test Execution Success
+Measures whether generated tests successfully execute in the target environment.
+Metrics:
+Passing tests
+Runtime failures
+Assertion failures
+7.3 Code Coverage
+Measures how much production code is exercised by generated tests.
+Metrics:
+Line coverage
+Function coverage
+Branch coverage
+7.4 Mock Generation Accuracy
+Evaluates whether generated mocks correctly represent architectural abstractions.
+Metrics:
+Correct protocol mocking
+Dependency replacement accuracy
+Avoidance of concrete implementation usage
+7.5 Architectural Compliance Score
+Measures whether generated tests respect architectural constraints.
+Evaluation criteria:
+Criterion	Description
+Dependency inversion	Uses abstractions instead of concrete classes
+Layer isolation	Does not violate module boundaries
+Mock strategy	Uses appropriate dependency replacement
+Concurrency handling	Correctly handles async/MainActor requirements
+
+
+8. Ablation Study
+To understand the contribution of each context element, an ablation study is performed.
+Different context configurations are compared:
+A. Source Code Only
+Code
+B. Code + Basic Metadata
+Code
+
++
+
+Component Names
++
+Dependencies
+C. Code + Architecture Context
+Code
+
++
+
+Full Architecture Context
+D. Code + Selected Architecture Context
+Code
+
++
+
+Relevant Context Only
+This experiment evaluates whether selective context engineering provides advantages over simply providing more information.
+9. Threats to Validity
+Internal Validity
+Potential issues:
+randomness of LLM generation,
+prompt sensitivity,
+model updates.
+Mitigation:
+multiple generation runs,
+fixed prompts,
+controlled model parameters.
+External Validity
+Potential issues:
+limited number of programming languages,
+Swift-focused evaluation.
+Mitigation:
+The proposed framework is language-independent at the conceptual level and can be extended to other languages supporting modular architectures.
+Construct Validity
+Potential issues:
+automated metrics may not fully represent test quality.
+Mitigation:
+Combine automated measurements with manual architectural evaluation.
+10. Expected Outcome
+The expected outcome of this experiment is to determine whether architecture-aware context engineering improves LLM-based unit test generation quality compared to code-only approaches.
+The experiment aims to demonstrate that providing structured architectural knowledge enables LLMs to better understand software structure, dependency relationships, and testing requirements.

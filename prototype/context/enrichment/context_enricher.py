@@ -116,14 +116,16 @@ class ContextEnricher:
             []
         ):
 
-            # Handle already enriched dependency
+
             if isinstance(
                 dependency,
                 dict
             ):
+
                 dependency_name = dependency["name"]
 
             else:
+
                 dependency_name = dependency
 
 
@@ -135,7 +137,7 @@ class ContextEnricher:
             )
 
 
-            result.append({
+            enriched_dependency = {
 
                 "name": dependency_name,
 
@@ -144,7 +146,27 @@ class ContextEnricher:
                 "mock_required":
                     dependency_type == "Protocol"
 
-            })
+            }
+
+
+            # Preserve implementation mapping
+            if isinstance(
+                dependency,
+                dict
+            ):
+
+                if "implementation" in dependency:
+
+                    enriched_dependency[
+                        "implementation"
+                    ] = dependency[
+                        "implementation"
+                    ]
+
+
+            result.append(
+                enriched_dependency
+            )
 
 
         return result

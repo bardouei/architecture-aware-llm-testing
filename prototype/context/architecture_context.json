@@ -43,7 +43,10 @@
                 {
                     "name": "UserRepository",
                     "type": "Protocol",
-                    "mock_required": true
+                    "mock_required": true,
+                    "implementation": [
+                        "DefaultUserRepository"
+                    ]
                 }
             ],
             "testing_strategy": {
@@ -67,7 +70,10 @@
                 {
                     "name": "LoginUseCase",
                     "type": "Protocol",
-                    "mock_required": true
+                    "mock_required": true,
+                    "implementation": [
+                        "DefaultLoginUseCase"
+                    ]
                 }
             ],
             "testing_strategy": {
