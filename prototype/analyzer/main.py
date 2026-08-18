@@ -3,13 +3,18 @@ from pathlib import Path
 
 from scanner import RepositoryScanner
 from swift_parser import SwiftParser
+from implementation_mapper import ImplementationMapper
 
 
 PROJECT_PATH = "../../examples/SwiftSampleApp"
 
 
-# Create output directory
+# -----------------------------
+# Output directory
+# -----------------------------
+
 output_path = Path("output")
+
 output_path.mkdir(
     exist_ok=True
 )
@@ -32,6 +37,7 @@ metadata = {
     "files": files,
 
     "modules": scanner.scan_modules()
+
 }
 
 
@@ -47,7 +53,10 @@ with open(
     )
 
 
-print("Repository scanned successfully")
+print(
+    "Repository scanned successfully"
+)
+
 
 
 # -----------------------------
@@ -62,6 +71,7 @@ parser = SwiftParser(
 architecture_components = parser.parse()
 
 
+
 with open(
     output_path / "architecture_components.json",
     "w"
@@ -74,4 +84,39 @@ with open(
     )
 
 
-print("Swift analysis completed")
+print(
+    "Swift analysis completed"
+)
+
+
+
+# -----------------------------
+# Implementation Mapping
+# -----------------------------
+
+mapper = ImplementationMapper(
+    architecture_components["components"]
+)
+
+
+implementation_mapping = (
+    mapper.build_mapping()
+)
+
+
+
+with open(
+    output_path / "implementation_mapping.json",
+    "w"
+) as file:
+
+    json.dump(
+        implementation_mapping,
+        file,
+        indent=4
+    )
+
+
+print(
+    "Implementation mapping completed"
+)

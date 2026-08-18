@@ -1,0 +1,84 @@
+{
+    "system": {
+        "language": "Swift",
+        "testing_framework": "XCTest"
+    },
+    "architecture": {
+        "patterns": [
+            "MVVM",
+            "Clean Architecture"
+        ]
+    },
+    "components": [
+        {
+            "name": "DefaultUserRepository",
+            "type": "class",
+            "file": "DefaultUserRepository.swift",
+            "layer": "Data",
+            "implements": [
+                "UserRepository"
+            ],
+            "responsibility": "Provides data access abstraction",
+            "dependencies": [],
+            "testing_strategy": {
+                "framework": "XCTest",
+                "test_type": "Unit Test",
+                "mock_strategy": "Protocol Mock"
+            },
+            "concurrency": {
+                "main_actor": false,
+                "async_support": false
+            }
+        },
+        {
+            "name": "DefaultLoginUseCase",
+            "type": "class",
+            "file": "DefaultLoginUseCase.swift",
+            "layer": "Domain",
+            "implements": [
+                "LoginUseCase"
+            ],
+            "responsibility": "Contains business logic and application rules",
+            "dependencies": [
+                {
+                    "name": "UserRepository",
+                    "type": "Protocol",
+                    "mock_required": true
+                }
+            ],
+            "testing_strategy": {
+                "framework": "XCTest",
+                "test_type": "Unit Test",
+                "mock_strategy": "Protocol Mock"
+            },
+            "concurrency": {
+                "main_actor": false,
+                "async_support": false
+            }
+        },
+        {
+            "name": "LoginViewModel",
+            "type": "class",
+            "file": "LoginViewModel.swift",
+            "layer": "Presentation",
+            "implements": [],
+            "responsibility": "Manages UI state and coordinates user actions",
+            "dependencies": [
+                {
+                    "name": "LoginUseCase",
+                    "type": "Protocol",
+                    "mock_required": true
+                }
+            ],
+            "testing_strategy": {
+                "framework": "XCTest",
+                "test_type": "Unit Test",
+                "mock_strategy": "Protocol Mock"
+            },
+            "concurrency": {
+                "main_actor": true,
+                "async_support": true
+            }
+        }
+    ]
+}

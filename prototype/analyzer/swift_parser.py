@@ -89,8 +89,6 @@ class SwiftParser:
             content
         )
 
-
-
     def extract_classes(
         self,
         content,
@@ -101,7 +99,7 @@ class SwiftParser:
 
 
         class_pattern = (
-            r"(?:final\s+)?class\s+(\w+)"
+            r"(?:final\s+)?class\s+(\w+)(?:\s*:\s*([\w,\s]+))?"
         )
 
 
@@ -111,7 +109,34 @@ class SwiftParser:
         )
 
 
-        for class_name in classes:
+        for class_name, inheritance in classes:
+
+
+            implements = []
+
+
+            if inheritance:
+
+                inherited_types = [
+                    item.strip()
+                    for item in inheritance.split(",")
+                ]
+
+
+                # Framework types that are not architecture interfaces
+                ignored = {
+                    "ObservableObject",
+                    "View",
+                    "NSObject"
+                }
+
+
+                implements = [
+                    item
+                    for item in inherited_types
+                    if item not in ignored
+                ]
+
 
 
             dependencies = (
@@ -122,6 +147,7 @@ class SwiftParser:
             )
 
 
+
             components.append({
 
                 "name": class_name,
@@ -130,13 +156,14 @@ class SwiftParser:
 
                 "file": filename,
 
+                "implements": implements,
+
                 "dependencies": dependencies
 
             })
 
 
         return components
-
 
 
     def extract_dependencies(

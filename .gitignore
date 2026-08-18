@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+
+prototype/analyzer/output/
+
+.DS_Store

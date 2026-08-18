@@ -4,12 +4,18 @@
             "name": "DefaultUserRepository",
             "type": "class",
             "file": "DefaultUserRepository.swift",
+            "implements": [
+                "UserRepository"
+            ],
             "dependencies": []
         },
         {
             "name": "DefaultLoginUseCase",
             "type": "class",
             "file": "DefaultLoginUseCase.swift",
+            "implements": [
+                "LoginUseCase"
+            ],
             "dependencies": [
                 "UserRepository"
             ]
@@ -18,6 +24,7 @@
             "name": "LoginViewModel",
             "type": "class",
             "file": "LoginViewModel.swift",
+            "implements": [],
             "dependencies": [
                 "LoginUseCase"
             ]
