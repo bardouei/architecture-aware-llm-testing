@@ -25,9 +25,14 @@ from architecture-specific context, but its main study has not yet run.
 The first three-condition TCA calibration (`SplashFeature`, 3 runs per condition)
 produced zero compilable suites in all conditions. Diagnostics showed systematic
 hallucination of obsolete TCA testing APIs rather than application-build failures.
-The calibration is retained as a protocol failure. Protocol `three-condition-v2`
-now supplies identical compile-validated TCA 1.26.1 API grounding to all conditions;
-its contract independently compiles and passes in an isolated SwiftPM smoke test.
+Protocol v2 then improved executable-suite yield to 6/9, but exposed one remaining
+systematic TestStore trailing-closure error and had only one available mutant. Its
+local-context condition retrieved zero files and therefore is not a meaningful
+retrieval treatment. Both calibrations are retained as protocol evidence. Protocol
+`three-condition-v3` supplies identical compile-validated TCA 1.26.1 API grounding,
+an exact no-state-change closure rule, and four clock/cancellation mutants. Its
+contract independently compiles and passes in an isolated SwiftPM smoke test. The
+three-test validation suite killed all four mutants with zero invalid mutants.
 
 ## Workstream readiness
 
@@ -106,9 +111,10 @@ Simple overall readiness: **64% including the intentionally deferred paper**, or
 
 ## Immediate next steps
 
-1. Run a small three-condition TCA calibration on `SplashFeature` and `HomeFeature`
-   without tuning prompts against measured outcomes.
-2. Add SwiftPM focal-file coverage and broaden reducer/effect mutation operators.
+1. Run the final v3 calibration on `SplashFeature`, then run all three conditions on
+   `HomeFeature`, where local retrieval is non-empty.
+2. Add SwiftPM focal-file coverage and manually review the expanded reducer/effect
+   mutation operators.
 3. Validate architecture extraction precision/recall on a hand-labeled set.
 4. Freeze and preregister the main protocol with comparable token budgets.
 5. Run repeated generations per component and at least two models; analyze with

@@ -140,6 +140,8 @@ Additional context may include:
 
 Existing project-authored test bodies are excluded. Framework API contracts are
 derived from resolved public interfaces and validated with a separate smoke fixture.
+If local retrieval returns zero files, that condition is marked as having no local
+treatment and is excluded from claims about retrieval effectiveness for that target.
 
 ------------------------------------------------------------------------
 

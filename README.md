@@ -155,10 +155,12 @@ python experiments/analyze_generation_failures.py \
 
 The next protocol has three causally distinct conditions: source only, source plus
 automatically retrieved local definitions, and the same local definitions plus
-architecture facts. Protocol `three-condition-v2` gives every condition identical
+architecture facts. Protocol `three-condition-v3` gives every condition identical
 architecture-neutral build grounding: SwiftPM metadata, resolved framework
 versions, and compile-validated framework API contracts. This prevents framework
-API drift from being mistaken for an architecture effect. Generate a
+API drift from being mistaken for an architecture effect. It also encodes exact
+TestStore assertion-closure rules and uses multiple clock/cancellation mutants for
+TCA reducers. Generate a
 counterbalanced Modular TCA study with:
 
 ```bash
@@ -188,7 +190,9 @@ The SwiftPM evaluator removes project-authored tests, injects one generated suit
 checks build/compilation/execution, and runs target mutants. Focal-file SwiftPM
 coverage is not yet implemented and is explicitly reported as unavailable.
 Framework-contract smoke fixtures are compile-validation infrastructure only: they
-are never included in prompts or measured as generated suites.
+are never included in prompts or measured as generated suites. The v3 smoke suite
+executes three tests and validates four mutants; all four are compile-valid and
+killed by the validation oracle.
 
 Run Python tests:
 
