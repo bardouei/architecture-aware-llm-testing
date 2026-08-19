@@ -207,6 +207,19 @@ class SwiftParser:
             matches
         )
 
+        # The Composable Architecture dependency-key injection.
+        dependencies.extend(
+            re.findall(r"@Dependency\(\\\.(\w+)\)", content)
+        )
+
+        # TCA reducer composition and destination references. Only names that
+        # resolve to parsed components are traversed by the context selector.
+        dependencies.extend(
+            name
+            for name in re.findall(r"\b([A-Z]\w*Feature)\b", content)
+            if name != class_name
+        )
+
 
         # init parameters
         init_pattern = (

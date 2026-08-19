@@ -22,6 +22,21 @@ class RepositoryScannerTests(unittest.TestCase):
         self.assertEqual(files["source_files"], ["App/HomeViewModel.swift"])
         self.assertEqual(files["test_files"], ["AppTests/HomeViewModelTests.swift"])
 
+    def test_ignores_dependency_and_generated_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "Sources/App/App.swift"
+            dependency = root / ".build/checkouts/Dependency/Sources/Dependency.swift"
+            generated = root / ".swiftpm/Generated.swift"
+            manifest = root / "Package.swift"
+            for path in (source, dependency, generated, manifest):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("struct Example {}")
+
+            files = RepositoryScanner(root).scan_files(relative=True)
+
+        self.assertEqual(files["source_files"], ["Sources/App/App.swift"])
+
 
 class SwiftParserTests(unittest.TestCase):
     def test_extracts_classes_structs_and_actors_with_relative_paths(self):
@@ -43,6 +58,27 @@ class SwiftParserTests(unittest.TestCase):
             all(item["file"] == "Domain/Types.swift" for item in result["components"])
         )
         self.assertEqual(result["protocols"], ["Repository"])
+
+    def test_extracts_tca_dependency_key(self):
+        dependencies = SwiftParser([]).extract_dependencies(
+            "@Dependency(\\.postsClient) var postsClient", "HomeFeature"
+        )
+
+        self.assertIn("postsClient", dependencies)
+
+    def test_extracts_composed_tca_features(self):
+        dependencies = SwiftParser([]).extract_dependencies(
+            """struct AppFeature {
+  var body: some ReducerOf<Self> {
+    Scope(state: \.home, action: \.home) { HomeFeature() }
+    Scope(state: \.splash, action: \.splash) { SplashFeature() }
+  }
+}
+""",
+            "AppFeature",
+        )
+
+        self.assertEqual(set(dependencies), {"HomeFeature", "SplashFeature"})
 
 
 if __name__ == "__main__":

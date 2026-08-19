@@ -25,21 +25,24 @@ A real-world project is eligible for the comparative experiment only when:
 The current `i2tocr-ios` snapshot is registered but not experiment-eligible: its
 license is unknown and its Xcode project references a missing asset catalog.
 
-## Adding Modular-TCA-App
+## Modular-TCA-App
 
 `Modular-TCA-App` is a strong candidate because it adds a substantially different
 architecture family (TCA), module boundaries, reducers/effects, dependency
-injection, concurrency, and a mature test suite. Add an unmodified snapshot at:
+injection, concurrency, and a mature test suite. Its current local snapshot is at:
 
 ```text
-datasets/projects/modular-tca-app/
+datasets/projects/Modular-TCA-App/
 ```
 
-Do not copy its nested `.git` directory. After adding it, record its upstream URL,
-immutable commit, license, Xcode workspace/project, scheme, test targets, Swift/TCA
-versions, and clean-build command in `registry.json`. Its existing tests remain a
-reference/oracle and must not be included in generated-test outcome measurements.
+The pinned revision contains nine Swift packages. All packages build and all 99
+project-authored tests pass with the recorded toolchain. The snapshot has no license
+file, so it is qualified for local experiments but must not be redistributed as a
+public benchmark until the owner supplies a compatible license or explicit
+permission. For this reason the nested project directory is intentionally not
+tracked by this repository.
 
 Because the project is large, begin with a stratified sample rather than the whole
 application: select reducers/features of low, medium, and high dependency complexity
-and record the selection rule before observing generated-test results.
+before observing generated-test results. The frozen initial sample is
+`SplashFeature` (low), `HomeFeature` (medium), and `AppFeature` (high).

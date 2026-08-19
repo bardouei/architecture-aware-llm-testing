@@ -30,5 +30,8 @@ class PatternDetector:
                 "Clean Architecture"
             )
 
+        if any(name.endswith("Feature") for name in names):
+            patterns.append("Composable Architecture (TCA)")
+
 
         return patterns

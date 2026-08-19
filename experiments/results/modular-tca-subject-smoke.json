@@ -1,0 +1,36 @@
+{
+  "validated_at": "2026-08-19T18:03:40.919013+00:00",
+  "results": [
+    {
+      "subject_id": "modular-tca-splash",
+      "target": "SplashFeature",
+      "complexity_stratum": "low",
+      "package_path": "Packages/FeatureSplash",
+      "test_target": "FeatureSplashTests",
+      "success": true,
+      "tests_executed": 2,
+      "exit_code": 0
+    },
+    {
+      "subject_id": "modular-tca-home",
+      "target": "HomeFeature",
+      "complexity_stratum": "medium",
+      "package_path": "Packages/FeatureHome",
+      "test_target": "FeatureHomeTests",
+      "success": true,
+      "tests_executed": 3,
+      "exit_code": 0
+    },
+    {
+      "subject_id": "modular-tca-app",
+      "target": "AppFeature",
+      "complexity_stratum": "high",
+      "package_path": "Packages/AppFeature",
+      "test_target": "AppFeatureTests",
+      "success": true,
+      "tests_executed": 1,
+      "exit_code": 0
+    }
+  ],
+  "all_passed": true
+}

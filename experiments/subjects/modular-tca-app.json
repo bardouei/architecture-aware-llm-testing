@@ -1,0 +1,13 @@
+{
+  "id": "modular-tca-app",
+  "dataset_id": "modular-tca-app",
+  "project": "datasets/projects/Modular-TCA-App",
+  "target": "AppFeature",
+  "source": "Packages/AppFeature/Sources/AppFeature/AppFeature.swift",
+  "module_name": "AppFeature",
+  "build_system": "swift_package",
+  "package_path": "Packages/AppFeature",
+  "test_target": "AppFeatureTests",
+  "complexity_stratum": "high",
+  "max_local_files": 6
+}

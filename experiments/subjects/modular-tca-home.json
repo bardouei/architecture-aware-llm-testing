@@ -1,0 +1,13 @@
+{
+  "id": "modular-tca-home",
+  "dataset_id": "modular-tca-app",
+  "project": "datasets/projects/Modular-TCA-App",
+  "target": "HomeFeature",
+  "source": "Packages/FeatureHome/Sources/FeatureHome/HomeFeature.swift",
+  "module_name": "FeatureHome",
+  "build_system": "swift_package",
+  "package_path": "Packages/FeatureHome",
+  "test_target": "FeatureHomeTests",
+  "complexity_stratum": "medium",
+  "max_local_files": 6
+}

@@ -11,6 +11,9 @@ DerivedData/
 # Imported projects are vendored snapshots, not nested repositories.
 datasets/projects/*/.git/
 
+# Local-only research subject; redistribution is blocked until licensed.
+datasets/projects/Modular-TCA-App/
+
 .DS_Store
 xcuserdata/
 *.xcuserstate

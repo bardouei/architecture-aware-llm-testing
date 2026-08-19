@@ -3,6 +3,8 @@ from pathlib import Path
 
 class RepositoryScanner:
 
+    IGNORED_DIRECTORIES = {".git", ".build", ".swiftpm", "DerivedData"}
+
 
     def __init__(self, project_path: str):
         self.project_path = Path(project_path).resolve()
@@ -15,6 +17,12 @@ class RepositoryScanner:
 
 
         for file in sorted(self.project_path.rglob("*.swift")):
+
+            if any(part in self.IGNORED_DIRECTORIES for part in file.parts):
+                continue
+
+            if file.name == "Package.swift":
+                continue
 
             file_path = (
                 str(file.relative_to(self.project_path))
@@ -41,10 +49,7 @@ class RepositoryScanner:
 
         modules = set()
 
-        ignored = {
-            ".git",
-            ".build"
-        }
+        ignored = self.IGNORED_DIRECTORIES
 
 
         for folder in self.project_path.iterdir():

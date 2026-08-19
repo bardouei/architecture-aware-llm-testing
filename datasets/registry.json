@@ -43,6 +43,43 @@
         "Some existing unit tests reference types not found by the current source scan.",
         "HomeViewModelTests.swift is empty."
       ]
+    },
+    {
+      "id": "modular-tca-app",
+      "kind": "real_world_project",
+      "path": "datasets/projects/Modular-TCA-App",
+      "language": "Swift",
+      "architectures": [
+        "Composable Architecture (TCA)",
+        "Modular SwiftPM",
+        "Dependency Injection"
+      ],
+      "build_system": "swift_package",
+      "packages": 9,
+      "source_files": 101,
+      "test_files": 46,
+      "baseline_tests": 99,
+      "test_command": "sh Scripts/test-all-packages.sh",
+      "swift_tools_version": "6.2",
+      "validated_swift_version": "6.3.3",
+      "tca_version": "1.26.1",
+      "candidate_components": [
+        "SplashFeature",
+        "HomeFeature",
+        "AppFeature"
+      ],
+      "source": {
+        "url": "https://github.com/bardouei/Modular-TCA-App.git",
+        "commit": "3971ed4b667267fc45080a0bbd88c03df6f9bb59",
+        "commit_date": "2026-08-18T17:48:27+03:30"
+      },
+      "eligibility": "qualified_build_license_pending",
+      "notes": [
+        "All nine Swift packages built and their 99 existing tests passed on 2026-08-19.",
+        "No license file is present at the pinned revision; local analysis is allowed, but redistribution and public benchmark publication remain blocked pending permission.",
+        "Existing project-authored tests are an oracle only and are excluded from generated-suite measurements.",
+        "The selected low, medium, and high complexity targets are SplashFeature, HomeFeature, and AppFeature."
+      ]
     }
   ]
 }

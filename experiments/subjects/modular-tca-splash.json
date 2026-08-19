@@ -1,0 +1,13 @@
+{
+  "id": "modular-tca-splash",
+  "dataset_id": "modular-tca-app",
+  "project": "datasets/projects/Modular-TCA-App",
+  "target": "SplashFeature",
+  "source": "Packages/FeatureSplash/Sources/FeatureSplash/SplashFeature.swift",
+  "module_name": "FeatureSplash",
+  "build_system": "swift_package",
+  "package_path": "Packages/FeatureSplash",
+  "test_target": "FeatureSplashTests",
+  "complexity_stratum": "low",
+  "max_local_files": 4
+}

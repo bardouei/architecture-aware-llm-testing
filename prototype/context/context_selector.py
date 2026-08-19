@@ -55,8 +55,22 @@ class ContextSelector:
         name
     ):
 
-        return self.components.get(
+        exact_match = self.components.get(
             name
+        )
+
+        if exact_match:
+            return exact_match
+
+        normalized_name = name.casefold()
+
+        return next(
+            (
+                component
+                for component_name, component in self.components.items()
+                if component_name.casefold() == normalized_name
+            ),
+            None,
         )
 
 
