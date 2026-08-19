@@ -65,6 +65,18 @@ captures request ID, resolved model, latency, and token usage for provenance. Th
 API smoke check is not an experimental generation and should be run only after the
 two environment variables are set.
 
+For the rate-limited Groq free tier, configure a Groq key and an active model:
+
+```bash
+export GROQ_API_KEY="..."
+export AALLT_PROVIDER="groq"
+export AALLT_MODEL="qwen/qwen3.6-27b"
+python experiments/check_groq_connection.py
+```
+
+The Groq adapter uses its OpenAI-compatible chat-completions endpoint and records
+request ID, resolved model, latency, token usage, provider, and endpoint metadata.
+
 Run Python tests:
 
 ```bash
