@@ -19,7 +19,10 @@ LLM-generated Swift/XCTest suites over a source-code-only baseline.
    including protocols and concrete implementations reached through dependencies.
 5. **Prompt construction** creates source-only, source-plus-local-definitions, and
    architecture-aware conditions. The two enriched conditions receive identical
-   exact definitions, isolating the added value of architecture facts.
+   exact definitions, isolating the added value of architecture facts. Every
+   condition also receives identical build/toolchain facts and compile-validated
+   framework API contracts; these are execution controls rather than architecture
+   treatment.
 6. **Test generation** sends counterbalanced requests through an injectable model
    client and stores prompts, raw/clean responses, hashes, model metadata, usage,
    latency, and protocol manifests. Interrupted studies can resume without replacing

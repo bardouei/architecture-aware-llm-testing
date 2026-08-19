@@ -103,6 +103,11 @@ Input:
 
 The LLM receives only the target class implementation.
 
+All conditions additionally receive the same architecture-neutral execution
+contract: module/test-target names, compiler/package version, resolved framework
+versions, and compile-validated signatures for framework testing APIs. These facts
+are required to make the test harness executable and are not architecture treatment.
+
 Example:
 
     LoginViewModel.swift
@@ -132,6 +137,9 @@ Additional context may include:
 -   Imported files
 -   Related classes
 -   Local dependencies
+
+Existing project-authored test bodies are excluded. Framework API contracts are
+derived from resolved public interfaces and validated with a separate smoke fixture.
 
 ------------------------------------------------------------------------
 

@@ -22,6 +22,13 @@ It uses one component, one model/provider, two conditions, and three mutants. Th
 new three-condition protocol is implemented to separate ordinary local-code context
 from architecture-specific context, but its main study has not yet run.
 
+The first three-condition TCA calibration (`SplashFeature`, 3 runs per condition)
+produced zero compilable suites in all conditions. Diagnostics showed systematic
+hallucination of obsolete TCA testing APIs rather than application-build failures.
+The calibration is retained as a protocol failure. Protocol `three-condition-v2`
+now supplies identical compile-validated TCA 1.26.1 API grounding to all conditions;
+its contract independently compiles and passes in an isolated SwiftPM smoke test.
+
 ## Workstream readiness
 
 Percentages are engineering/research-readiness estimates, not statistical results.
@@ -31,15 +38,15 @@ Percentages are engineering/research-readiness estimates, not statistical result
 | Research Idea | 90% | Clear question, hypothesis, and mechanism | Sharpen novelty against current literature |
 | Experiment Design | 75% | Repeated paired pilot plus source/local/architecture controlled protocol and counterbalanced order | Preregister sample size, token parity, ablations, and statistics |
 | Prototype App | 85% | Generic Swift analysis plus Xcode and SwiftPM subject paths | Validate extraction accuracy on labeled projects |
-| Prompt Engineering | 70% | Frozen v1 pilot and three-condition v2 prompts with equal local definitions | Token-budget parity, ablations, contamination controls |
-| Test Generation | 75% | Real Groq generation, provenance, counterbalancing, and resume for registry-driven subjects | Run TCA study and add a second model family |
+| Prompt Engineering | 75% | Frozen protocols, equal local definitions, and shared compile-validated framework grounding | Token-budget parity, ablations, contamination controls |
+| Test Generation | 78% | Real Groq generation, provenance, counterbalancing, resume, and automatic rate-limit retry | Run v2 TCA calibration and add a second model family |
 | Evaluation | 78% | Isolated Xcode and SwiftPM suite injection, zero-test rejection, checkpointing, and mutation | SwiftPM focal coverage, compliance rubric, flakiness, cost/time |
 | Dataset | 40% | One fixture, one rejected candidate, and one build-qualified nine-package TCA candidate | Resolve license and add diverse eligible repositories |
 | Mutation Analysis | 55% | Restore-safe operators plus reducer state mutations | More TCA operators and equivalent-mutant adjudication |
 | Paper Writing | 0% | Intentionally deferred | Start only after protocol freeze and main study |
 
-Simple overall readiness: **63% including the intentionally deferred paper**, or
-**71% across active pre-paper workstreams**.
+Simple overall readiness: **64% including the intentionally deferred paper**, or
+**72% across active pre-paper workstreams**.
 
 ## Dataset
 
