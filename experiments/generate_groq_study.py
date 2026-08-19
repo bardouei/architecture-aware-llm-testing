@@ -32,6 +32,7 @@ REQUEST_SETTINGS = {
     "reasoning_format": "hidden",
     "reasoning_effort": "none",
 }
+MAX_AUTOMATIC_RETRY_DELAY_SECONDS = 60.0
 TEMPLATES = {
     "source_only": ROOT / "prototype/llm/templates/source_grounded_v5_prompt.txt",
     "local_context": ROOT / "prototype/llm/templates/local_grounded_v5_prompt.txt",
@@ -109,9 +110,13 @@ def rate_limit_delay(error: Exception, fallback: float) -> float | None:
     milliseconds = re.search(r"try again in\s+([0-9.]+)ms", message, re.I)
     if milliseconds:
         return max(fallback, float(milliseconds.group(1)) / 1000 + 0.25)
-    seconds = re.search(r"try again in\s+([0-9.]+)s", message, re.I)
-    if seconds:
-        return max(fallback, float(seconds.group(1)) + 0.25)
+    duration = re.search(r"try again in\s+([0-9.hms]+)", message, re.I)
+    if duration:
+        tokens = re.findall(r"([0-9.]+)(h|m|s)", duration.group(1), re.I)
+        if tokens:
+            multipliers = {"h": 3600.0, "m": 60.0, "s": 1.0}
+            seconds = sum(float(value) * multipliers[unit.lower()] for value, unit in tokens)
+            return max(fallback, seconds + 0.25)
     return fallback
 
 
@@ -124,6 +129,13 @@ def generate_with_retry(client, prompt: str, retries: int, fallback_delay: float
             delay = rate_limit_delay(error, fallback_delay)
             if delay is None or attempt >= retries:
                 raise
+            if delay > MAX_AUTOMATIC_RETRY_DELAY_SECONDS:
+                raise RuntimeError(
+                    f"Rate-limit reset requires about {delay:.2f}s, exceeding the "
+                    f"{MAX_AUTOMATIC_RETRY_DELAY_SECONDS:.0f}s automatic-wait limit. "
+                    "The study stopped safely; rerun the same command with --resume "
+                    f"after the provider reset. Provider error: {error}"
+                ) from error
             attempt += 1
             print(f"Rate limited; retrying in {delay:.2f}s ({attempt}/{retries})")
             time.sleep(delay)

@@ -105,6 +105,22 @@ class GenerateGroqStudyTests(unittest.TestCase):
 
         self.assertEqual(rate_limit_delay(error, 0.1), 1.21)
 
+    def test_parses_mixed_minute_second_retry_delay(self):
+        error = RuntimeError("429 rate_limit: Please try again in 43m46.992s")
+
+        self.assertEqual(rate_limit_delay(error, 10.0), 2627.242)
+
+    @patch("experiments.generate_groq_study.time.sleep")
+    def test_stops_safely_instead_of_sleeping_for_long_reset(self, sleep):
+        class Client:
+            def generate(self, prompt):
+                raise RuntimeError("429 rate_limit: try again in 43m46.992s")
+
+        with self.assertRaisesRegex(RuntimeError, "stopped safely"):
+            generate_with_retry(Client(), "same prompt", 5, 10.0)
+
+        sleep.assert_not_called()
+
     @patch("experiments.generate_groq_study.time.sleep")
     def test_retries_rate_limit_without_replacing_request(self, sleep):
         class Client:
