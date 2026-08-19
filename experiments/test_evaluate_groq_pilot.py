@@ -69,6 +69,10 @@ class GeneratedPilotEvaluationTests(unittest.TestCase):
                 report,
             )
             self.assertIn("| architecture_aware | run-001", report)
+            self.assertIn(
+                "| baseline | 1 | 100.00% | 100.00% | 90.00% | 25.00% |",
+                report,
+            )
 
 
 if __name__ == "__main__":

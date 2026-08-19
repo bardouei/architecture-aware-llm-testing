@@ -106,6 +106,9 @@ prompt, raw response, cleaned Swift test, hashes, usage, latency, selected
 architecture context, and experiment manifest. Reasoning blocks such as
 `<think>...</think>` and Markdown fences are removed only from
 `generated-test.swift`; the raw response remains unchanged for provenance.
+The post-calibration prompt protocol is frozen as `qwen-pilot-v1`; do not tune it
+against individual measured runs. The generator pauses 2.1 seconds between API
+requests by default and supports `--resume` after interruption.
 
 Evaluate every generated suite in an isolated copy of the Xcode fixture:
 
@@ -123,6 +126,8 @@ Failed generations are retained as failures rather than discarded.
 An Xcode exit code of zero is not sufficient: a suite passes only when at least one
 XCTest case actually executes. Production-target build, generated-test compilation,
 and test execution are reported separately.
+The report includes both individual observations and unconditional aggregate rates;
+failed generations contribute zero coverage and mutation score.
 
 Run Python tests:
 

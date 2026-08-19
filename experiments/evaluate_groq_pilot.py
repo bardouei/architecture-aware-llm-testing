@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 import shutil
+from statistics import mean
 import sys
 import tempfile
 
@@ -104,8 +105,30 @@ def evaluate_generated_test(generated_test: Path, workspace_root: Path) -> dict:
 
 def build_report(experiment: Path) -> str:
     rows = []
+    summaries = []
     for condition in CONDITIONS:
         evaluations = sorted((experiment / condition).glob("run-*/evaluation.json"))
+        results = [json.loads(path.read_text()) for path in evaluations]
+        if results:
+            count = len(results)
+            summaries.append(
+                "| {condition} | {count} | {compile:.2f}% | {tests:.2f}% "
+                "| {coverage:.2f}% | {mutation:.2f}% |".format(
+                    condition=condition,
+                    count=count,
+                    compile=100
+                    * sum(
+                        result.get("generated_suite_compilation_success", False)
+                        for result in results
+                    )
+                    / count,
+                    tests=100
+                    * sum(result["generated_suite_success"] for result in results)
+                    / count,
+                    coverage=mean(result["target_coverage"] for result in results),
+                    mutation=mean(result["mutation"]["score"] for result in results),
+                )
+            )
         for evaluation_path in evaluations:
             result = json.loads(evaluation_path.read_text())
             rows.append(
@@ -128,13 +151,23 @@ def build_report(experiment: Path) -> str:
             )
     return """# Real Groq Pilot Evaluation
 
+## Aggregate results
+
+| Condition | N | Test compile rate | Test success rate | Mean coverage | Mean mutation score |
+|---|---:|---:|---:|---:|---:|
+{summaries}
+
+Failed generations contribute zero to unconditional coverage and mutation means.
+
+## Individual runs
+
 | Condition | Run | App build | Test compile | Generated suite | Tests run | Coverage | Mutation score |
 |---|---|---:|---:|---:|---:|---:|---:|
 {rows}
 
 Results are per-generation observations. Failed or uncompilable suites remain in
 the denominator and are not silently repaired or discarded.
-""".format(rows="\n".join(rows))
+""".format(summaries="\n".join(summaries), rows="\n".join(rows))
 
 
 def parse_args() -> argparse.Namespace:

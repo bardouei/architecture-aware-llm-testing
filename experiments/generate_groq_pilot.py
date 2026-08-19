@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,7 @@ DATASET_ID = "swift-sample-app"
 PROJECT = ROOT / "datasets/fixtures/swift-sample-app"
 SOURCE = PROJECT / "SwiftSampleApp/Feature/Login/LoginViewModel.swift"
 TARGET = "LoginViewModel"
+PROTOCOL_VERSION = "qwen-pilot-v1"
 REQUEST_SETTINGS = {
     "temperature": 0.6,
     "max_completion_tokens": 4096,
@@ -50,6 +52,7 @@ def validate_resume_manifest(existing: dict, expected: dict) -> None:
         "conditions",
         "runs_per_condition",
         "request_settings",
+        "protocol_version",
     )
     mismatches = [
         field for field in controlled_fields if existing.get(field) != expected.get(field)
@@ -118,6 +121,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Keep completed runs and generate only missing runs",
     )
+    parser.add_argument(
+        "--request-delay-seconds",
+        type=float,
+        default=2.1,
+        help="Minimum pause between real API requests (default: 2.1)",
+    )
     return parser.parse_args()
 
 
@@ -125,6 +134,8 @@ def main() -> None:
     arguments = parse_args()
     if arguments.runs < 1:
         raise SystemExit("--runs must be at least 1")
+    if arguments.request_delay_seconds < 0:
+        raise SystemExit("--request-delay-seconds cannot be negative")
     experiment_id = arguments.experiment_id or datetime.now(timezone.utc).strftime(
         "pilot-%Y%m%dT%H%M%SZ"
     )
@@ -156,6 +167,8 @@ def main() -> None:
         "conditions": list(conditions),
         "runs_per_condition": arguments.runs,
         "request_settings": REQUEST_SETTINGS,
+        "protocol_version": PROTOCOL_VERSION,
+        "request_delay_seconds": arguments.request_delay_seconds,
     }
     output.mkdir(parents=True, exist_ok=True)
     manifest_path = output / "manifest.json"
@@ -178,6 +191,7 @@ def main() -> None:
             PROJECT, TARGET, output / "architecture-context"
         )
 
+    requests_started = 0
     for condition in conditions:
         for run_index in range(1, arguments.runs + 1):
             run_directory = output / condition / f"run-{run_index:03d}"
@@ -197,7 +211,10 @@ def main() -> None:
                     )
                 print(f"Kept {run_directory.relative_to(ROOT)}")
                 continue
+            if requests_started:
+                time.sleep(arguments.request_delay_seconds)
             try:
+                requests_started += 1
                 run_directory = generate_run(
                     client, condition, run_index, output, source, context
                 )

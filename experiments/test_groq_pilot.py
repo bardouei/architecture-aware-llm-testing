@@ -2,6 +2,7 @@ import unittest
 
 from experiments.generate_groq_pilot import (
     REQUEST_SETTINGS,
+    PROTOCOL_VERSION,
     build_prompt,
     sha256,
     validate_resume_manifest,
@@ -27,6 +28,7 @@ class GroqPilotTests(unittest.TestCase):
         self.assertEqual(REQUEST_SETTINGS["temperature"], 0.6)
         self.assertEqual(REQUEST_SETTINGS["reasoning_format"], "hidden")
         self.assertEqual(REQUEST_SETTINGS["reasoning_effort"], "none")
+        self.assertEqual(PROTOCOL_VERSION, "qwen-pilot-v1")
 
     def test_resume_rejects_changed_controls(self):
         expected = {
@@ -37,6 +39,7 @@ class GroqPilotTests(unittest.TestCase):
             "conditions": ["baseline"],
             "runs_per_condition": 1,
             "request_settings": {"temperature": 0.6},
+            "protocol_version": "v1",
         }
         existing = dict(expected, requested_model="model-b")
 
@@ -52,6 +55,7 @@ class GroqPilotTests(unittest.TestCase):
             "conditions": ["baseline", "architecture_aware"],
             "runs_per_condition": 1,
             "request_settings": REQUEST_SETTINGS,
+            "protocol_version": PROTOCOL_VERSION,
         }
 
         validate_resume_manifest(manifest, manifest.copy())
