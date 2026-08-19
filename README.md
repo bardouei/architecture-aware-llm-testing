@@ -77,6 +77,22 @@ python experiments/check_groq_connection.py
 The Groq adapter uses its OpenAI-compatible chat-completions endpoint and records
 request ID, resolved model, latency, token usage, provider, and endpoint metadata.
 
+After the connection check succeeds, generate one real paired pilot without
+injecting or evaluating the output yet:
+
+```bash
+python experiments/generate_groq_pilot.py \
+  --condition both \
+  --runs 1 \
+  --experiment-id groq-smoke-001
+```
+
+The ignored `artifacts/generations/groq-smoke-001/` directory contains the exact
+prompt, raw response, cleaned Swift test, hashes, usage, latency, selected
+architecture context, and experiment manifest. Reasoning blocks such as
+`<think>...</think>` and Markdown fences are removed only from
+`generated-test.swift`; the raw response remains unchanged for provenance.
+
 Run Python tests:
 
 ```bash
