@@ -1,18 +1,46 @@
+import json
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from experiments.generate_groq_study import (
     build_generation_schedule,
     build_prompt,
     generate_with_retry,
+    initialize_or_validate_manifest,
     PROTOCOL_VERSION,
     rate_limit_delay,
 )
 
 
 class GenerateGroqStudyTests(unittest.TestCase):
-    def test_uses_v3_protocol(self):
-        self.assertEqual(PROTOCOL_VERSION, "three-condition-v3")
+    def test_uses_v4_protocol(self):
+        self.assertEqual(PROTOCOL_VERSION, "three-condition-v4")
+
+    def test_resume_initializes_manifest_in_empty_interrupted_directory(self):
+        with TemporaryDirectory() as temporary_directory:
+            output = Path(temporary_directory) / "study"
+            output.mkdir()
+            manifest = {"experiment_id": "study"}
+
+            initialize_or_validate_manifest(output, manifest, resume=True)
+
+            self.assertEqual(
+                json.loads((output / "manifest.json").read_text()),
+                manifest,
+            )
+
+    def test_resume_rejects_nonempty_directory_without_manifest(self):
+        with TemporaryDirectory() as temporary_directory:
+            output = Path(temporary_directory) / "study"
+            output.mkdir()
+            (output / "unknown.txt").write_text("unknown")
+
+            with self.assertRaisesRegex(ValueError, "non-empty output"):
+                initialize_or_validate_manifest(
+                    output, {"experiment_id": "study"}, resume=True
+                )
 
     def test_rotates_three_condition_order(self):
         conditions = ("source_only", "local_context", "architecture_aware")
@@ -69,6 +97,7 @@ class GenerateGroqStudyTests(unittest.TestCase):
         self.assertTrue(
             all("empty or comment-only trailing closure" in prompt for prompt in prompts)
         )
+        self.assertTrue(all("receive(\\.postsResponse)" in prompt for prompt in prompts))
 
     def test_parses_provider_retry_delay(self):
         error = RuntimeError("429 rate_limit: Please try again in 960ms")

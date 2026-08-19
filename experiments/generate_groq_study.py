@@ -25,7 +25,7 @@ from prototype.run_pipeline import run as build_architecture_context
 
 
 CONDITIONS = ("source_only", "local_context", "architecture_aware")
-PROTOCOL_VERSION = "three-condition-v3"
+PROTOCOL_VERSION = "three-condition-v4"
 REQUEST_SETTINGS = {
     "temperature": 0.6,
     "max_completion_tokens": 4096,
@@ -33,9 +33,9 @@ REQUEST_SETTINGS = {
     "reasoning_effort": "none",
 }
 TEMPLATES = {
-    "source_only": ROOT / "prototype/llm/templates/source_grounded_v3_prompt.txt",
-    "local_context": ROOT / "prototype/llm/templates/local_grounded_v3_prompt.txt",
-    "architecture_aware": ROOT / "prototype/llm/templates/architecture_grounded_v3_prompt.txt",
+    "source_only": ROOT / "prototype/llm/templates/source_grounded_v4_prompt.txt",
+    "local_context": ROOT / "prototype/llm/templates/local_grounded_v4_prompt.txt",
+    "architecture_aware": ROOT / "prototype/llm/templates/architecture_grounded_v4_prompt.txt",
 }
 
 
@@ -146,6 +146,31 @@ def validate_resume(existing: dict, expected: dict) -> None:
         raise ValueError("Cannot resume with different settings: " + ", ".join(mismatches))
 
 
+def initialize_or_validate_manifest(
+    output: Path, manifest: dict, resume: bool
+) -> None:
+    """Initialize a new study or validate an existing resumable study.
+
+    An empty directory can be left behind by an interrupted first attempt. Treat
+    it as a new study, while refusing to adopt a non-empty directory whose
+    provenance cannot be verified from a manifest.
+    """
+    manifest_path = output / "manifest.json"
+    if manifest_path.exists():
+        if not resume:
+            raise ValueError(f"Experiment output already exists: {output}")
+        validate_resume(json.loads(manifest_path.read_text()), manifest)
+        return
+
+    if output.exists() and any(output.iterdir()):
+        if resume:
+            raise ValueError(f"Cannot resume non-empty output without manifest: {output}")
+        raise ValueError(f"Experiment output already exists: {output}")
+
+    output.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+
+
 def main() -> None:
     arguments = parse_args()
     if arguments.runs < 1:
@@ -167,8 +192,6 @@ def main() -> None:
         f"{subject['id']}-%Y%m%dT%H%M%SZ"
     )
     output = ROOT / "artifacts/studies" / experiment_id
-    if output.exists() and not arguments.resume:
-        raise SystemExit(f"Experiment output already exists: {output}")
     try:
         client = GroqClient(model=os.environ.get("AALLT_MODEL"), **REQUEST_SETTINGS)
     except ValueError as error:
@@ -186,17 +209,10 @@ def main() -> None:
         "generation_order": "cyclic_counterbalanced_by_run",
         "rate_limit_retries": arguments.rate_limit_retries,
     }
-    output.mkdir(parents=True, exist_ok=True)
-    manifest_path = output / "manifest.json"
-    if arguments.resume:
-        if not manifest_path.exists():
-            raise SystemExit(f"Cannot resume without manifest: {manifest_path}")
-        try:
-            validate_resume(json.loads(manifest_path.read_text()), manifest)
-        except ValueError as error:
-            raise SystemExit(str(error)) from error
-    else:
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    try:
+        initialize_or_validate_manifest(output, manifest, arguments.resume)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
 
     source = source_path.read_text()
     context_path = output / "context/llm-context.json"

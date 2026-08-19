@@ -8,6 +8,10 @@ import re
 
 
 TOOLS_VERSION = re.compile(r"swift-tools-version:\s*([0-9.]+)")
+SWIFT_IMPORT = re.compile(
+    r"^\s*(?:@\w+(?:\([^\n]*\))?\s+)?import\s+([A-Za-z_]\w*)",
+    re.MULTILINE,
+)
 
 
 def resolved_versions(package: Path) -> dict[str, str]:
@@ -24,6 +28,13 @@ def resolved_versions(package: Path) -> dict[str, str]:
     return dict(sorted(versions.items()))
 
 
+def source_imports(source: Path) -> list[str]:
+    """Extract explicit module imports without inferring architecture facts."""
+    if not source.is_file():
+        return []
+    return sorted(set(SWIFT_IMPORT.findall(source.read_text())))
+
+
 def build_shared_context(root: Path, subject: dict) -> dict:
     """Return build facts shared by every experimental condition."""
     project = (Path(root) / subject["project"]).resolve()
@@ -32,6 +43,9 @@ def build_shared_context(root: Path, subject: dict) -> dict:
         "module_name": subject["module_name"],
         "test_target": subject.get("test_target"),
         "test_framework": "XCTest",
+        "source_imports": source_imports(project / subject["source"])
+        if subject.get("source")
+        else [],
     }
     if subject.get("build_system") == "swift_package":
         package = project / subject["package_path"]

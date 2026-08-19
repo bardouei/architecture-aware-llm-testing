@@ -1,6 +1,6 @@
 # Project Status
 
-Last reviewed: 2026-08-19
+Last reviewed: 2026-08-20
 
 ## Objective
 
@@ -20,7 +20,8 @@ two-sided exact McNemar p-value of 0.21875.
 This is promising pilot evidence, not a significant or externally valid result.
 It uses one component, one model/provider, two conditions, and three mutants. The
 new three-condition protocol is implemented to separate ordinary local-code context
-from architecture-specific context, but its main study has not yet run.
+from architecture-specific context; calibration is still in progress before the
+main study.
 
 The first three-condition TCA calibration (`SplashFeature`, 3 runs per condition)
 produced zero compilable suites in all conditions. Diagnostics showed systematic
@@ -28,11 +29,16 @@ hallucination of obsolete TCA testing APIs rather than application-build failure
 Protocol v2 then improved executable-suite yield to 6/9, but exposed one remaining
 systematic TestStore trailing-closure error and had only one available mutant. Its
 local-context condition retrieved zero files and therefore is not a meaningful
-retrieval treatment. Both calibrations are retained as protocol evidence. Protocol
-`three-condition-v3` supplies identical compile-validated TCA 1.26.1 API grounding,
-an exact no-state-change closure rule, and four clock/cancellation mutants. Its
-contract independently compiles and passes in an isolated SwiftPM smoke test. The
-three-test validation suite killed all four mutants with zero invalid mutants.
+retrieval treatment. Protocol v3 then produced 9/9 compilable Splash suites, with
+test-success rates of 66.67%, 100%, and 100% and unconditional mean mutation scores
+of 50%, 75%, and 75% for source-only, local-context, and architecture-aware. Because
+Splash retrieved zero local files, this does not establish a retrieval or
+architecture effect. On the medium-complexity Home subject, all nine v3 suites
+failed compilation; the dominant shared cause was the missing TCA rule requiring
+case-key-path receipt for non-Equatable actions. Protocol `three-condition-v4` adds
+this generic rule, explicit focal-source imports, and a strict state-initializer rule
+equally across conditions. Its isolated contract smoke test passed three tests and
+killed all four mutants; all three frozen TCA subjects remain build-qualified.
 
 ## Workstream readiness
 
@@ -43,8 +49,8 @@ Percentages are engineering/research-readiness estimates, not statistical result
 | Research Idea | 90% | Clear question, hypothesis, and mechanism | Sharpen novelty against current literature |
 | Experiment Design | 75% | Repeated paired pilot plus source/local/architecture controlled protocol and counterbalanced order | Preregister sample size, token parity, ablations, and statistics |
 | Prototype App | 85% | Generic Swift analysis plus Xcode and SwiftPM subject paths | Validate extraction accuracy on labeled projects |
-| Prompt Engineering | 75% | Frozen protocols, equal local definitions, and shared compile-validated framework grounding | Token-budget parity, ablations, contamination controls |
-| Test Generation | 78% | Real Groq generation, provenance, counterbalancing, resume, and automatic rate-limit retry | Run v2 TCA calibration and add a second model family |
+| Prompt Engineering | 78% | Frozen calibration protocols, equal local definitions, and shared compile-validated framework grounding | Validate v4 on Home, token-budget parity, ablations, contamination controls |
+| Test Generation | 80% | Real Groq generation, provenance, counterbalancing, robust resume, and automatic rate-limit retry | Run v4 Home calibration and add a second model family |
 | Evaluation | 78% | Isolated Xcode and SwiftPM suite injection, zero-test rejection, checkpointing, and mutation | SwiftPM focal coverage, compliance rubric, flakiness, cost/time |
 | Dataset | 40% | One fixture, one rejected candidate, and one build-qualified nine-package TCA candidate | Resolve license and add diverse eligible repositories |
 | Mutation Analysis | 55% | Restore-safe operators plus reducer state mutations | More TCA operators and equivalent-mutant adjudication |

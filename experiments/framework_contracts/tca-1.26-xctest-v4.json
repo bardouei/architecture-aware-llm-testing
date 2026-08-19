@@ -1,0 +1,49 @@
+{
+  "name": "Composable Architecture XCTest contract",
+  "validated_version": "1.26.1",
+  "protocol_revision": "v4",
+  "source": "Public interfaces and compile-passing tests in the locally resolved subject package",
+  "required_imports": [
+    "XCTest",
+    "ComposableArchitecture"
+  ],
+  "import_rule": "Import every module listed in source_imports when the test directly names a type from that module. The focal module still uses @testable import MODULE_NAME.",
+  "type_placeholders": {
+    "FEATURE": "Replace with the reducer type under test"
+  },
+  "available_api_patterns": [
+    "let clock = TestClock()",
+    "let store = TestStore(initialState: FEATURE.State()) { FEATURE() } withDependencies: { $0.continuousClock = clock }",
+    "await store.send(ACTION)",
+    "await store.send(ACTION) { state in state.PROPERTY = EXPECTED_VALUE }",
+    "await clock.advance(by: .seconds(N))",
+    "await store.receive(EXPECTED_EQUATABLE_ACTION)",
+    "await store.receive(EXPECTED_EQUATABLE_ACTION) { state in state.PROPERTY = EXPECTED_VALUE }",
+    "await store.receive(\\.ACTION_CASE)",
+    "await store.receive(\\.ACTION_CASE) { state in state.PROPERTY = EXPECTED_VALUE }"
+  ],
+  "receive_rule": "If the feature Action is not explicitly Equatable, or the received case contains Error, TaskResult, or another non-Equatable value, receive it with its case key path such as await store.receive(\\.postsResponse), never by constructing the associated action value. Use direct receive(EXPECTED_ACTION) only when Action is explicitly Equatable.",
+  "state_initializer_rule": "Use FEATURE.State() unless an exact different initializer declaration is supplied. Never infer a memberwise initializer for a type that declares its own init().",
+  "assertion_closure_rule": "When an action causes no observable state mutation, call send or receive without a trailing closure. A trailing assertion closure is allowed only when it accepts the state parameter and changes it to the expected value.",
+  "unavailable_api_forms": [
+    "await store.send(ACTION) { /* empty or comments only */ }",
+    "await store.receive(ACTION) { /* empty or comments only */ }",
+    "await store.receive(.NON_EQUATABLE_ASSOCIATED_CASE(...))",
+    "FEATURE.State(PROPERTY: VALUE) unless that initializer is explicitly supplied",
+    "FEATURE.reducer",
+    "FEATURE().reducer",
+    "TestScheduler",
+    "DispatchQueue.test",
+    "ContinuousClock.test()",
+    "ImmediateClock assigned to continuousClock",
+    "eraseToEffect()",
+    "eraseToAnyClock()",
+    "store.advance(...)"
+  ],
+  "concurrency_constraints": [
+    "Annotate an XCTestCase using TestStore with @MainActor under this Swift 6 toolchain",
+    "Await TestStore send and receive operations",
+    "Await TestClock advance operations",
+    "Create TestStore inside each test method; do not override XCTest setUp or tearDown with actor-isolated state"
+  ]
+}

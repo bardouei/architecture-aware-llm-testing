@@ -12,6 +12,9 @@ class BuildContextBuilderTests(unittest.TestCase):
             root = Path(directory)
             package = root / "Project/Package"
             package.mkdir(parents=True)
+            source = root / "Project/Sources/Feature.swift"
+            source.parent.mkdir(parents=True)
+            source.write_text("import DomainCore\nimport ChildFeature\nimport DomainCore\n")
             (package / "Package.swift").write_text("// swift-tools-version: 6.2")
             (package / "Package.resolved").write_text(
                 json.dumps(
@@ -34,6 +37,7 @@ class BuildContextBuilderTests(unittest.TestCase):
                 "build_system": "swift_package",
                 "package_path": "Package",
                 "framework_contract": "contract.json",
+                "source": "Sources/Feature.swift",
             }
 
             context = build_shared_context(root, subject)
@@ -41,6 +45,7 @@ class BuildContextBuilderTests(unittest.TestCase):
         self.assertEqual(context["swift_tools_version"], "6.2")
         self.assertEqual(context["resolved_dependencies"], {"framework": "1.2.3"})
         self.assertEqual(context["framework_api_contract"]["allowed"], ["VerifiedAPI()"])
+        self.assertEqual(context["source_imports"], ["ChildFeature", "DomainCore"])
 
 
 if __name__ == "__main__":

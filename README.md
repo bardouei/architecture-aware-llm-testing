@@ -153,22 +153,24 @@ python experiments/analyze_generation_failures.py \
   --experiment-id qwen-pilot-v1-n10
 ```
 
-The next protocol has three causally distinct conditions: source only, source plus
+The current protocol has three causally distinct conditions: source only, source plus
 automatically retrieved local definitions, and the same local definitions plus
-architecture facts. Protocol `three-condition-v3` gives every condition identical
+architecture facts. Protocol `three-condition-v4` gives every condition identical
 architecture-neutral build grounding: SwiftPM metadata, resolved framework
 versions, and compile-validated framework API contracts. This prevents framework
 API drift from being mistaken for an architecture effect. It also encodes exact
-TestStore assertion-closure rules and uses multiple clock/cancellation mutants for
-TCA reducers. Generate a
-counterbalanced Modular TCA study with:
+TestStore assertion-closure and non-Equatable action-receive rules, explicit source
+imports, and multiple clock/cancellation mutants for TCA reducers. Calibrate a
+counterbalanced Modular TCA study before increasing its run count:
 
 ```bash
 python experiments/generate_groq_study.py \
   --subject modular-tca-home \
   --condition all \
-  --runs 10 \
-  --experiment-id modular-tca-home-qwen-n10
+  --runs 3 \
+  --experiment-id modular-home-calibration-v4-n3 \
+  --request-delay-seconds 10 \
+  --resume
 ```
 
 Use `--resume` to continue an interrupted generation. Qualify the three frozen TCA
@@ -181,7 +183,7 @@ python experiments/smoke_swiftpm_subjects.py
 python experiments/smoke_framework_contract.py
 
 python experiments/evaluate_swiftpm_study.py \
-  --experiment-id modular-tca-home-qwen-n10 \
+  --experiment-id modular-home-calibration-v4-n3 \
   --condition all \
   --resume
 ```
