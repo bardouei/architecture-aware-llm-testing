@@ -30,6 +30,7 @@ class TestRunnerTests(unittest.TestCase):
         result = TestRunner("Sample.xcodeproj").run()
 
         self.assertTrue(result["success"])
+        self.assertTrue(result["compilation_success"])
         self.assertIn("passed", result["output"])
         self.assertEqual(result["tests_executed"], 1)
 
@@ -43,6 +44,21 @@ class TestRunnerTests(unittest.TestCase):
         self.assertTrue(result["xcode_success"])
         self.assertEqual(result["tests_executed"], 0)
         self.assertIn("zero tests", result["error"])
+
+    @patch("evaluation.test_runner.subprocess.run")
+    def test_reports_generated_suite_compilation_failure(self, run):
+        run.return_value = subprocess.CompletedProcess(
+            [],
+            65,
+            "GeneratedTests.swift:10:2: error: actor isolation violation\n"
+            "Testing cancelled because the build failed",
+            "",
+        )
+
+        result = TestRunner("Sample.xcodeproj").run()
+
+        self.assertFalse(result["success"])
+        self.assertFalse(result["compilation_success"])
 
 
 class CoverageAnalyzerTests(unittest.TestCase):

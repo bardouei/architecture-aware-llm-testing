@@ -55,6 +55,7 @@ class GeneratedPilotEvaluationTests(unittest.TestCase):
                     json.dumps(
                         {
                             "application_build_success": True,
+                            "generated_suite_compilation_success": True,
                             "generated_suite_success": True,
                             "tests_executed": 2,
                             "target_coverage": 90,
@@ -64,7 +65,7 @@ class GeneratedPilotEvaluationTests(unittest.TestCase):
                 )
             report = build_report(experiment)
             self.assertIn(
-                "| baseline | run-001 | pass | pass | 2 | 90.00% | 25.00% |",
+                "| baseline | run-001 | pass | pass | pass | 2 | 90.00% | 25.00% |",
                 report,
             )
             self.assertIn("| architecture_aware | run-001", report)

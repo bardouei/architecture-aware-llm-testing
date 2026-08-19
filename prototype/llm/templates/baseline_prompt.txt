@@ -10,6 +10,10 @@ Requirements:
 - Use XCTest.
 - Generate compilable tests.
 - Mock dependencies if necessary.
+- Mock the dependency type referenced by the source directly. Do not invent an
+  adapter protocol or extend an existing protocol to conform to a new protocol.
+- Preserve concurrency isolation from the source. If the target is `@MainActor`,
+  annotate the XCTestCase class with `@MainActor`.
 - Do not invent unavailable type initializers or APIs.
 - Follow Swift best practices.
 

@@ -33,6 +33,9 @@ Requirements:
 - Use protocol mocks.
 - Use exact declarations in `source_evidence` when implementing mocks or creating
   values; do not invent type initializers or APIs.
+- Apply concurrency facts directly. If the target component has
+  `concurrency.main_actor: true` or its source has `@MainActor`, annotate the
+  XCTestCase class with `@MainActor`.
 
 
 Return only Swift code.

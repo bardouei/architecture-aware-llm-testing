@@ -88,6 +88,9 @@ def evaluate_generated_test(generated_test: Path, workspace_root: Path) -> dict:
     suite_diagnostic = suite.get("output", suite.get("error", ""))
     return {
         "application_build_success": application_build.get("success", False),
+        "generated_suite_compilation_success": suite.get(
+            "compilation_success", False
+        ),
         "generated_suite_success": suite.get("success", False),
         "tests_executed": suite.get("tests_executed", 0),
         "target_coverage": coverage.get("coverage", 0),
@@ -106,11 +109,17 @@ def build_report(experiment: Path) -> str:
         for evaluation_path in evaluations:
             result = json.loads(evaluation_path.read_text())
             rows.append(
-                "| {condition} | {run} | {build} | {suite} | {count} | {coverage:.2f}% "
+                "| {condition} | {run} | {build} | {compile} | {suite} | {count} "
+                "| {coverage:.2f}% "
                 "| {mutation:.2f}% |".format(
                     condition=condition,
                     run=evaluation_path.parent.name,
                     build="pass" if result["application_build_success"] else "fail",
+                    compile=(
+                        "pass"
+                        if result.get("generated_suite_compilation_success", False)
+                        else "fail"
+                    ),
                     suite="pass" if result["generated_suite_success"] else "fail",
                     count=result.get("tests_executed", 0),
                     coverage=result["target_coverage"],
@@ -119,8 +128,8 @@ def build_report(experiment: Path) -> str:
             )
     return """# Real Groq Pilot Evaluation
 
-| Condition | Run | App build | Generated suite | Tests run | Coverage | Mutation score |
-|---|---|---:|---:|---:|---:|---:|
+| Condition | Run | App build | Test compile | Generated suite | Tests run | Coverage | Mutation score |
+|---|---|---:|---:|---:|---:|---:|---:|
 {rows}
 
 Results are per-generation observations. Failed or uncompilable suites remain in
@@ -162,6 +171,7 @@ def main() -> None:
             evaluated += 1
             print(
                 f"{condition}/{generated_test.parent.name}: "
+                f"compile={'pass' if result['generated_suite_compilation_success'] else 'fail'}, "
                 f"tests={'pass' if result['generated_suite_success'] else 'fail'}, "
                 f"executed={result['tests_executed']}, "
                 f"coverage={result['target_coverage']:.2f}%, "

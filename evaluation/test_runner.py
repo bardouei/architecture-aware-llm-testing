@@ -61,9 +61,14 @@ class TestRunner:
                     output,
                 )
             )
+            compilation_failed = bool(
+                re.search(r":\d+:\d+: error:", output)
+                or "Testing cancelled because the build failed" in output
+            )
             response = {
                 "success": result.returncode == 0 and tests_executed > 0,
                 "xcode_success": result.returncode == 0,
+                "compilation_success": not compilation_failed,
                 "tests_executed": tests_executed,
                 "output": output[-5000:],
             }

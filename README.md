@@ -121,7 +121,8 @@ target-file coverage, and the identical restore-safe mutant set. It writes
 `evaluation.json` beside each generation and a combined `evaluation-report.md`.
 Failed generations are retained as failures rather than discarded.
 An Xcode exit code of zero is not sufficient: a suite passes only when at least one
-XCTest case actually executes.
+XCTest case actually executes. Production-target build, generated-test compilation,
+and test execution are reported separately.
 
 Run Python tests:
 
