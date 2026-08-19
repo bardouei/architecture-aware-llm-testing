@@ -53,6 +53,7 @@ def validate_resume_manifest(existing: dict, expected: dict) -> None:
         "runs_per_condition",
         "request_settings",
         "protocol_version",
+        "generation_order",
     )
     mismatches = [
         field for field in controlled_fields if existing.get(field) != expected.get(field)
@@ -62,6 +63,15 @@ def validate_resume_manifest(existing: dict, expected: dict) -> None:
             "Cannot resume experiment with different settings: "
             + ", ".join(mismatches)
         )
+
+
+def build_generation_schedule(conditions: tuple[str, ...], runs: int):
+    """Counterbalance condition order within paired repeated generations."""
+    schedule = []
+    for run_index in range(1, runs + 1):
+        run_conditions = conditions if run_index % 2 else tuple(reversed(conditions))
+        schedule.extend((condition, run_index) for condition in run_conditions)
+    return schedule
 
 
 def build_prompt(condition: str, source: str, context: dict) -> tuple[str, str]:
@@ -168,6 +178,7 @@ def main() -> None:
         "runs_per_condition": arguments.runs,
         "request_settings": REQUEST_SETTINGS,
         "protocol_version": PROTOCOL_VERSION,
+        "generation_order": "counterbalanced_by_run",
         "request_delay_seconds": arguments.request_delay_seconds,
     }
     output.mkdir(parents=True, exist_ok=True)
@@ -192,37 +203,38 @@ def main() -> None:
         )
 
     requests_started = 0
-    for condition in conditions:
-        for run_index in range(1, arguments.runs + 1):
-            run_directory = output / condition / f"run-{run_index:03d}"
-            if arguments.resume and run_directory.exists():
-                required = {
-                    "prompt.txt",
-                    "raw-response.txt",
-                    "generated-test.swift",
-                    "metadata.json",
-                }
-                present = {
-                    path.name for path in run_directory.iterdir() if path.is_file()
-                }
-                if not required.issubset(present):
-                    raise SystemExit(
-                        f"Cannot resume incomplete run directory: {run_directory}"
-                    )
-                print(f"Kept {run_directory.relative_to(ROOT)}")
-                continue
-            if requests_started:
-                time.sleep(arguments.request_delay_seconds)
-            try:
-                requests_started += 1
-                run_directory = generate_run(
-                    client, condition, run_index, output, source, context
-                )
-            except Exception as error:
+    for condition, run_index in build_generation_schedule(
+        conditions, arguments.runs
+    ):
+        run_directory = output / condition / f"run-{run_index:03d}"
+        if arguments.resume and run_directory.exists():
+            required = {
+                "prompt.txt",
+                "raw-response.txt",
+                "generated-test.swift",
+                "metadata.json",
+            }
+            present = {
+                path.name for path in run_directory.iterdir() if path.is_file()
+            }
+            if not required.issubset(present):
                 raise SystemExit(
-                    f"Generation failed for {condition} run {run_index}: {error}"
-                ) from error
-            print(f"Generated {run_directory.relative_to(ROOT)}")
+                    f"Cannot resume incomplete run directory: {run_directory}"
+                )
+            print(f"Kept {run_directory.relative_to(ROOT)}")
+            continue
+        if requests_started:
+            time.sleep(arguments.request_delay_seconds)
+        try:
+            requests_started += 1
+            run_directory = generate_run(
+                client, condition, run_index, output, source, context
+            )
+        except Exception as error:
+            raise SystemExit(
+                f"Generation failed for {condition} run {run_index}: {error}"
+            ) from error
+        print(f"Generated {run_directory.relative_to(ROOT)}")
 
     print(f"Pilot artifacts: {output.relative_to(ROOT)}")
 

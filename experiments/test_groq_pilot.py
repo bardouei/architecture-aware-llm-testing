@@ -3,6 +3,7 @@ import unittest
 from experiments.generate_groq_pilot import (
     REQUEST_SETTINGS,
     PROTOCOL_VERSION,
+    build_generation_schedule,
     build_prompt,
     sha256,
     validate_resume_manifest,
@@ -56,9 +57,27 @@ class GroqPilotTests(unittest.TestCase):
             "runs_per_condition": 1,
             "request_settings": REQUEST_SETTINGS,
             "protocol_version": PROTOCOL_VERSION,
+            "generation_order": "counterbalanced_by_run",
         }
 
         validate_resume_manifest(manifest, manifest.copy())
+
+    def test_counterbalances_paired_generation_order(self):
+        schedule = build_generation_schedule(
+            ("baseline", "architecture_aware"), 3
+        )
+
+        self.assertEqual(
+            schedule,
+            [
+                ("baseline", 1),
+                ("architecture_aware", 1),
+                ("architecture_aware", 2),
+                ("baseline", 2),
+                ("baseline", 3),
+                ("architecture_aware", 3),
+            ],
+        )
 
 
 if __name__ == "__main__":

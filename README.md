@@ -108,7 +108,8 @@ architecture context, and experiment manifest. Reasoning blocks such as
 `generated-test.swift`; the raw response remains unchanged for provenance.
 The post-calibration prompt protocol is frozen as `qwen-pilot-v1`; do not tune it
 against individual measured runs. The generator pauses 2.1 seconds between API
-requests by default and supports `--resume` after interruption.
+requests by default, counterbalances condition order across paired runs, and
+supports `--resume` after interruption.
 
 Evaluate every generated suite in an isolated copy of the Xcode fixture:
 
