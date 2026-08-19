@@ -17,13 +17,13 @@ LLM-generated Swift/XCTest suites over a source-code-only baseline.
 3. **Context construction** turns extracted facts into a typed architecture context.
 4. **Target selection** keeps only architecture facts relevant to a focal component,
    including protocols and concrete implementations reached through dependencies.
-5. **Prompt construction** creates either a source-only baseline prompt or an
-   architecture-aware prompt. The experimental protocol must keep non-architecture
-   information, model settings, repair budget, and approximately the token budget
-   controlled.
-6. **Test generation** sends the prompt to an injectable model client and stores the
-   raw response and generated suite. The current repository has a deterministic mock
-   client; a real provider and complete provenance capture remain to be implemented.
+5. **Prompt construction** creates source-only, source-plus-local-definitions, and
+   architecture-aware conditions. The two enriched conditions receive identical
+   exact definitions, isolating the added value of architecture facts.
+6. **Test generation** sends counterbalanced requests through an injectable model
+   client and stores prompts, raw/clean responses, hashes, model metadata, usage,
+   latency, and protocol manifests. Interrupted studies can resume without replacing
+   completed observations.
 7. **Evaluation** compiles the application, runs only the condition-specific test
    suite, measures focal-file coverage, and runs identical restore-safe mutants.
 8. **Comparison** reports compilation, execution, coverage, mutation score, and each
@@ -77,10 +77,10 @@ Claims that are not yet supported:
 
 ## Dataset expansion
 
-There are currently two registered projects but only one experiment-eligible
-controlled fixture. A journal study should determine sample size with a formal power
-analysis. The current planning target is 8–12 eligible repositories across at least
-three architecture families, with multiple focal components and repeated generations
-per condition. `Modular-TCA-App` is valuable as the next candidate because it adds
-TCA and modular boundaries, but it should be sampled by component complexity rather
-than evaluated monolithically.
+There are currently three registered projects: one eligible controlled fixture, one
+ineligible incomplete snapshot, and one locally qualified TCA project whose license
+is pending. A journal study should determine sample size with a formal power analysis.
+The planning target remains 8–12 eligible repositories across at least three
+architecture families, with multiple focal components and repeated generations per
+condition. `Modular-TCA-App` is sampled as low-, medium-, and high-complexity
+features rather than evaluated monolithically.

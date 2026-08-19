@@ -39,6 +39,8 @@ dataset are mature.
 - `swift-sample-app`: controlled MVVM/Clean Architecture fixture; validated.
 - `i2tocr-ios`: real-world MVVM/Clean Architecture candidate pinned to an immutable
   upstream commit; build and license eligibility are still pending.
+- `Modular-TCA-App`: local real-world TCA/SwiftPM subject; all nine packages and
+  99 authored tests pass, while public redistribution is blocked pending a license.
 
 See [datasets/registry.json](datasets/registry.json) for machine-readable metadata.
 
@@ -143,6 +145,43 @@ mutation baseline instead of executing it again.
 The report includes both individual observations and unconditional aggregate rates;
 failed generations contribute zero coverage and mutation score.
 
+Aggregate the completed repeated-generation pilot and reproduce its failure
+taxonomy/statistical summary:
+
+```bash
+python experiments/analyze_generation_failures.py \
+  --experiment-id qwen-pilot-v1-n10
+```
+
+The next protocol has three causally distinct conditions: source only, source plus
+automatically retrieved local definitions, and the same local definitions plus
+architecture facts. Generate a counterbalanced Modular TCA study with:
+
+```bash
+python experiments/generate_groq_study.py \
+  --subject modular-tca-home \
+  --condition all \
+  --runs 10 \
+  --experiment-id modular-tca-home-qwen-n10
+```
+
+Use `--resume` to continue an interrupted generation. Qualify the three frozen TCA
+subjects without calling an LLM, then evaluate generated SwiftPM suites in isolated
+copies:
+
+```bash
+python experiments/smoke_swiftpm_subjects.py
+
+python experiments/evaluate_swiftpm_study.py \
+  --experiment-id modular-tca-home-qwen-n10 \
+  --condition all \
+  --resume
+```
+
+The SwiftPM evaluator removes project-authored tests, injects one generated suite,
+checks build/compilation/execution, and runs target mutants. Focal-file SwiftPM
+coverage is not yet implemented and is explicitly reported as unavailable.
+
 Run Python tests:
 
 ```bash
@@ -188,7 +227,7 @@ remaining research work rather than simulated by these evaluation commands.
 
 ## Current evidence
 
-For the single validated `LoginViewModel` subject:
+For the deterministic `LoginViewModel` pipeline fixture:
 
 | Metric | Baseline | Architecture-aware |
 |---|---:|---:|
@@ -202,3 +241,8 @@ research claim. See [docs/project-status.md](docs/project-status.md) for the ful
 readiness assessment, [docs/system-overview.md](docs/system-overview.md) for the
 end-to-end method, and [docs/journal-readiness.md](docs/journal-readiness.md) for
 the publication plan.
+
+The first real repeated Qwen pilot (`n=10` paired generations) achieved 10% suite
+success for source-only and 50% for architecture-aware generation. Unconditional
+mutation score was 6.67% versus 46.67%. The direction is encouraging, but the exact
+paired McNemar p-value is 0.21875, so this pilot is not statistically conclusive.

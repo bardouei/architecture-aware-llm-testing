@@ -1,9 +1,11 @@
 # Experiment Design
 
-> Status: design draft. The single-component fixture comparison is validated, but
-> the multi-project protocol, model sampling plan, architecture-compliance rubric,
-> and statistical analysis plan are not frozen. See `project-status.md` and
-> `journal-readiness.md` before treating this document as an executable protocol.
+> Status: protocol draft. Source-only, automatically retrieved local context, and
+> architecture-aware conditions are executable with counterbalanced repeated
+> generation. The multi-project sampling plan, token-budget policy,
+> architecture-compliance rubric, and statistical analysis plan are not frozen.
+> See `project-status.md` and `journal-readiness.md` before treating this as a
+> preregistered main-study protocol.
 
 ## Architecture-Aware Context Engineering for LLM-Based Unit Test Generation in Modular Software Systems
 

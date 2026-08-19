@@ -10,16 +10,17 @@ suites compared with source-code-only prompting.
 
 ## Current evidence
 
-One isolated pipeline-validation comparison has been completed on the controlled
-`swift-sample-app` fixture and its `LoginViewModel` component using frozen suites.
-Both conditions compiled and passed. The architecture-aware fixture improved target
-coverage from 91.67% to 100% and mutation score from 33.33% to 100% across three
-identical mutants. A real Groq/Qwen connection has also been smoke-tested, but real
-paired model outputs have not yet been generated and archived in this repository.
+One isolated pipeline-validation comparison and one real repeated-generation pilot
+have been completed on the controlled `swift-sample-app` fixture. In the real Qwen
+pilot, source-only compiled and passed in 1/10 runs; architecture-aware compiled and
+passed in 5/10. Unconditional mutation scores were 6.67% and 46.67%, respectively.
+Architecture-aware won five discordant pairs and source-only won one, giving a
+two-sided exact McNemar p-value of 0.21875.
 
-This validates the experiment pipeline only. With one component, one frozen suite
-per condition, one architecture family, and three hand-designed mutants, it
-does not establish external validity or a publishable causal claim.
+This is promising pilot evidence, not a significant or externally valid result.
+It uses one component, one model/provider, two conditions, and three mutants. The
+new three-condition protocol is implemented to separate ordinary local-code context
+from architecture-specific context, but its main study has not yet run.
 
 ## Workstream readiness
 
@@ -28,17 +29,17 @@ Percentages are engineering/research-readiness estimates, not statistical result
 | Workstream | Readiness | Evidence | Main gap |
 |---|---:|---|---|
 | Research Idea | 90% | Clear question, hypothesis, and mechanism | Sharpen novelty against current literature |
-| Experiment Design | 65% | Independently runnable isolated A/B pipelines with identical mutants | Preregister protocol, repeated generations, controls, statistics |
-| Prototype App | 80% | Controlled fixture builds and has deterministic tests | Generalize all pipeline stages beyond one target |
-| Prompt Engineering | 55% | Versioned baseline/architecture prompts, exact selected declarations, controlled Qwen decoding | Token-budget parity, local-context control, ablations, contamination controls |
-| Test Generation | 60% | Real Groq generation with raw/clean outputs, hashes, usage, latency, and request metadata | Complete and archive repeated real generations; add retry/resume policy and second model family |
-| Evaluation | 70% | Generated suites are injected one at a time into isolated copies and measured by build, XCTest, coverage, and mutation | Architecture compliance, flakiness, quality rubric, cost/time metrics |
-| Dataset | 25% | One fixture and one registered real-world candidate | License/build qualification and substantially more diverse projects |
-| Mutation Analysis | 45% | Restore-safe execution and three valid operators | Broader operators, equivalent-mutant review, multiple components/projects |
+| Experiment Design | 75% | Repeated paired pilot plus source/local/architecture controlled protocol and counterbalanced order | Preregister sample size, token parity, ablations, and statistics |
+| Prototype App | 85% | Generic Swift analysis plus Xcode and SwiftPM subject paths | Validate extraction accuracy on labeled projects |
+| Prompt Engineering | 70% | Frozen v1 pilot and three-condition v2 prompts with equal local definitions | Token-budget parity, ablations, contamination controls |
+| Test Generation | 75% | Real Groq generation, provenance, counterbalancing, and resume for registry-driven subjects | Run TCA study and add a second model family |
+| Evaluation | 78% | Isolated Xcode and SwiftPM suite injection, zero-test rejection, checkpointing, and mutation | SwiftPM focal coverage, compliance rubric, flakiness, cost/time |
+| Dataset | 40% | One fixture, one rejected candidate, and one build-qualified nine-package TCA candidate | Resolve license and add diverse eligible repositories |
+| Mutation Analysis | 55% | Restore-safe operators plus reducer state mutations | More TCA operators and equivalent-mutant adjudication |
 | Paper Writing | 0% | Intentionally deferred | Start only after protocol freeze and main study |
 
-Simple overall readiness: **54% including the intentionally deferred paper**, or
-**62% across active pre-paper workstreams**.
+Simple overall readiness: **63% including the intentionally deferred paper**, or
+**71% across active pre-paper workstreams**.
 
 ## Dataset
 
@@ -65,6 +66,18 @@ Simple overall readiness: **54% including the intentionally deferred paper**, or
   - `HomeViewModelTests.swift` is empty;
   - clean build and baseline-test execution still require validation.
 
+### Modular-TCA-App
+
+- Type: real-world local candidate
+- Architecture: TCA + modular SwiftPM + dependency injection
+- Pinned commit: `3971ed4b667267fc45080a0bbd88c03df6f9bb59`
+- Static scan: 101 source files and 46 test files, excluding package manifests and
+  dependency/build caches
+- Build qualification: all nine packages and 99 authored tests pass
+- Frozen targets: `SplashFeature` (low), `HomeFeature` (medium), `AppFeature` (high)
+- Status: locally experiment-qualified; public redistribution blocked because no
+  license file is present
+
 ## Implemented system
 
 - Swift file and module scanning
@@ -73,6 +86,9 @@ Simple overall readiness: **54% including the intentionally deferred paper**, or
 - Baseline and architecture-aware prompt templates
 - Injectable LLM client interface with mock, OpenAI, and Groq implementations
 - Real paired Groq generation with controlled decoding and complete provenance
+- Registry-driven three-condition generation with cyclic counterbalancing
+- Automatically retrieved local-definition control without architecture labels
+- SwiftPM subject qualification and isolated generated-suite evaluation
 - Architecture-selected exact source evidence for dependency mocks and values
 - Isolated generated-suite injection with failures retained in the denominator
 - Xcode compilation and isolated XCTest execution
@@ -83,21 +99,17 @@ Simple overall readiness: **54% including the intentionally deferred paper**, or
 
 ## Immediate next steps
 
-1. Qualify or reject `i2tocr-ios`: establish license permission, fix or document its
-   clean-build baseline, and select independently reviewable components.
-2. Replace hard-coded context assumptions with project-derived architecture and
-   concurrency facts; validate extraction precision/recall on a hand-labeled set.
-3. Complete the real Qwen paired pilot, then integrate a second LLM family. Persist
-   model/version, parameters, prompt hash, raw response, repair attempts, latency,
-   and cost.
-4. Freeze a paired experimental protocol with equal non-architecture context and
-   comparable token budgets.
-5. Run repeated generations per component and model; analyze paired outcomes with
+1. Run a small three-condition TCA calibration on `SplashFeature` and `HomeFeature`
+   without tuning prompts against measured outcomes.
+2. Add SwiftPM focal-file coverage and broaden reducer/effect mutation operators.
+3. Validate architecture extraction precision/recall on a hand-labeled set.
+4. Freeze and preregister the main protocol with comparable token budgets.
+5. Run repeated generations per component and at least two models; analyze with
    confidence intervals and effect sizes.
 6. Add architecture-compliance and test-quality measures with blinded independent
    raters and inter-rater agreement.
-7. Expand mutation operators and manually adjudicate equivalent mutants.
-8. Expand to multiple architecture families and repositories before paper writing.
+7. Resolve Modular-TCA-App publication permission and qualify more repositories.
+8. Manually adjudicate equivalent mutants before paper writing.
 
 ## Paper policy
 

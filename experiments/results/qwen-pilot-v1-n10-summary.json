@@ -1,0 +1,141 @@
+{
+  "experiment_id": "qwen-pilot-v1-n10",
+  "conditions": {
+    "baseline": {
+      "runs": 10,
+      "compilation_success_count": 1,
+      "compilation_success_rate": 0.1,
+      "test_success_count": 1,
+      "test_success_rate": 0.1,
+      "unconditional_mean_coverage": 10.0,
+      "unconditional_mean_mutation_score": 6.667,
+      "conditional_mean_coverage": 100.0,
+      "conditional_mean_mutation_score": 66.67,
+      "failure_categories": {
+        "non_equatable_assertion": 7,
+        "type_or_signature_hallucination": 6,
+        "undefined_symbol": 2
+      }
+    },
+    "architecture_aware": {
+      "runs": 10,
+      "compilation_success_count": 5,
+      "compilation_success_rate": 0.5,
+      "test_success_count": 5,
+      "test_success_rate": 0.5,
+      "unconditional_mean_coverage": 50.0,
+      "unconditional_mean_mutation_score": 46.667,
+      "conditional_mean_coverage": 100.0,
+      "conditional_mean_mutation_score": 93.334,
+      "failure_categories": {
+        "actor_isolation": 2,
+        "non_equatable_assertion": 3,
+        "xctest_lifecycle_override": 1
+      }
+    }
+  },
+  "paired_test_success": {
+    "pairs": 10,
+    "architecture_aware_wins": 5,
+    "baseline_wins": 1,
+    "ties": 4,
+    "exact_mcnemar_p_value": 0.21875
+  },
+  "failed_runs": {
+    "baseline": [
+      {
+        "run": "run-001",
+        "categories": [
+          "non_equatable_assertion",
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-002",
+        "categories": [
+          "non_equatable_assertion",
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-003",
+        "categories": [
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-004",
+        "categories": [
+          "non_equatable_assertion",
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-005",
+        "categories": [
+          "non_equatable_assertion",
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-006",
+        "categories": [
+          "non_equatable_assertion",
+          "type_or_signature_hallucination"
+        ]
+      },
+      {
+        "run": "run-007",
+        "categories": [
+          "non_equatable_assertion",
+          "undefined_symbol"
+        ]
+      },
+      {
+        "run": "run-008",
+        "categories": [
+          "non_equatable_assertion"
+        ]
+      },
+      {
+        "run": "run-009",
+        "categories": [
+          "undefined_symbol"
+        ]
+      }
+    ],
+    "architecture_aware": [
+      {
+        "run": "run-001",
+        "categories": [
+          "xctest_lifecycle_override"
+        ]
+      },
+      {
+        "run": "run-005",
+        "categories": [
+          "non_equatable_assertion"
+        ]
+      },
+      {
+        "run": "run-008",
+        "categories": [
+          "actor_isolation",
+          "non_equatable_assertion"
+        ]
+      },
+      {
+        "run": "run-009",
+        "categories": [
+          "non_equatable_assertion"
+        ]
+      },
+      {
+        "run": "run-010",
+        "categories": [
+          "actor_isolation"
+        ]
+      }
+    ]
+  }
+}
