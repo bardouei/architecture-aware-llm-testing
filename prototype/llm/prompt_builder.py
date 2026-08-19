@@ -21,6 +21,7 @@ class PromptBuilder:
         source_code,
         module_name="SwiftSampleApp",
         local_context=None,
+        build_context=None,
     ):
 
 
@@ -41,6 +42,18 @@ class PromptBuilder:
             "{{SOURCE_CODE}}",
 
             source_code
+
+        )
+
+
+        prompt = prompt.replace(
+
+            "{{BUILD_CONTEXT}}",
+
+            json.dumps(
+                build_context or {},
+                indent=4
+            )
 
         )
 

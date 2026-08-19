@@ -1,0 +1,32 @@
+You are an expert Swift software architect generating a compile-ready XCTest suite.
+
+The application module is `{{MODULE_NAME}}`. Import it with
+`@testable import {{MODULE_NAME}}`.
+
+Build and framework API context (verified and mandatory):
+
+{{BUILD_CONTEXT}}
+
+Architecture context:
+
+{{ARCHITECTURE_CONTEXT}}
+
+Exact automatically retrieved local definitions:
+
+{{LOCAL_CONTEXT}}
+
+Swift target source:
+
+{{SOURCE_CODE}}
+
+Requirements:
+
+- Use XCTest.
+- Follow the verified framework API patterns exactly, substituting only the
+  documented placeholders and target actions.
+- Never use an API listed under `unavailable_api_forms`.
+- Respect only architecture boundaries and dependencies present in the supplied
+  architecture context.
+- Use only declarations present in the target or retrieved local definitions.
+- Preserve both source concurrency facts and build-context constraints.
+- Create deterministic tests and return only Swift code.

@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import time
 
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from prototype.context.local_context_builder import collect_local_context
+from prototype.context.build_context_builder import build_shared_context
 from prototype.llm.groq_client import GroqClient
 from prototype.llm.output_cleaner import clean_generated_code
 from prototype.llm.prompt_builder import PromptBuilder
@@ -23,7 +25,7 @@ from prototype.run_pipeline import run as build_architecture_context
 
 
 CONDITIONS = ("source_only", "local_context", "architecture_aware")
-PROTOCOL_VERSION = "three-condition-v1"
+PROTOCOL_VERSION = "three-condition-v2"
 REQUEST_SETTINGS = {
     "temperature": 0.6,
     "max_completion_tokens": 4096,
@@ -31,9 +33,9 @@ REQUEST_SETTINGS = {
     "reasoning_effort": "none",
 }
 TEMPLATES = {
-    "source_only": ROOT / "prototype/llm/templates/baseline_prompt.txt",
-    "local_context": ROOT / "prototype/llm/templates/local_context_prompt.txt",
-    "architecture_aware": ROOT / "prototype/llm/templates/architecture_local_prompt.txt",
+    "source_only": ROOT / "prototype/llm/templates/source_grounded_prompt.txt",
+    "local_context": ROOT / "prototype/llm/templates/local_grounded_prompt.txt",
+    "architecture_aware": ROOT / "prototype/llm/templates/architecture_grounded_prompt.txt",
 }
 
 
@@ -71,6 +73,7 @@ def build_prompt(
     source: str,
     local_context: list[dict],
     architecture_context: dict,
+    build_context: dict,
 ) -> tuple[str, str]:
     template = TEMPLATES[condition].read_text()
     architecture = architecture_context if condition == "architecture_aware" else {}
@@ -81,6 +84,7 @@ def build_prompt(
             source,
             module_name=subject["module_name"],
             local_context=evidence,
+            build_context=build_context,
         ),
         template,
     )
@@ -93,8 +97,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--experiment-id")
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--request-delay-seconds", type=float, default=2.1)
+    parser.add_argument("--request-delay-seconds", type=float, default=10.0)
+    parser.add_argument("--rate-limit-retries", type=int, default=5)
     return parser.parse_args()
+
+
+def rate_limit_delay(error: Exception, fallback: float) -> float | None:
+    message = str(error)
+    if "429" not in message and "rate_limit" not in message.lower():
+        return None
+    milliseconds = re.search(r"try again in\s+([0-9.]+)ms", message, re.I)
+    if milliseconds:
+        return max(fallback, float(milliseconds.group(1)) / 1000 + 0.25)
+    seconds = re.search(r"try again in\s+([0-9.]+)s", message, re.I)
+    if seconds:
+        return max(fallback, float(seconds.group(1)) + 0.25)
+    return fallback
+
+
+def generate_with_retry(client, prompt: str, retries: int, fallback_delay: float) -> str:
+    attempt = 0
+    while True:
+        try:
+            return client.generate(prompt)
+        except Exception as error:
+            delay = rate_limit_delay(error, fallback_delay)
+            if delay is None or attempt >= retries:
+                raise
+            attempt += 1
+            print(f"Rate limited; retrying in {delay:.2f}s ({attempt}/{retries})")
+            time.sleep(delay)
 
 
 def validate_resume(existing: dict, expected: dict) -> None:
@@ -107,6 +139,7 @@ def validate_resume(existing: dict, expected: dict) -> None:
         "runs_per_condition",
         "request_settings",
         "protocol_version",
+        "rate_limit_retries",
     )
     mismatches = [field for field in fields if existing.get(field) != expected.get(field)]
     if mismatches:
@@ -119,6 +152,8 @@ def main() -> None:
         raise SystemExit("--runs must be at least 1")
     if arguments.request_delay_seconds < 0:
         raise SystemExit("--request-delay-seconds cannot be negative")
+    if arguments.rate_limit_retries < 0:
+        raise SystemExit("--rate-limit-retries cannot be negative")
     try:
         subject = load_subject(arguments.subject)
     except ValueError as error:
@@ -149,6 +184,7 @@ def main() -> None:
         "request_settings": REQUEST_SETTINGS,
         "protocol_version": PROTOCOL_VERSION,
         "generation_order": "cyclic_counterbalanced_by_run",
+        "rate_limit_retries": arguments.rate_limit_retries,
     }
     output.mkdir(parents=True, exist_ok=True)
     manifest_path = output / "manifest.json"
@@ -180,6 +216,10 @@ def main() -> None:
     )
     architecture_context = dict(architecture_context)
     architecture_context.pop("source_evidence", None)
+    build_context = build_shared_context(ROOT, subject)
+    (output / "context/build-context.json").write_text(
+        json.dumps(build_context, indent=2) + "\n"
+    )
 
     requests_started = 0
     required = {"prompt.txt", "raw-response.txt", "generated-test.swift", "metadata.json"}
@@ -193,11 +233,21 @@ def main() -> None:
         if requests_started:
             time.sleep(arguments.request_delay_seconds)
         prompt, template = build_prompt(
-            condition, subject, source, local_context, architecture_context
+            condition,
+            subject,
+            source,
+            local_context,
+            architecture_context,
+            build_context,
         )
         try:
             requests_started += 1
-            raw = client.generate(prompt)
+            raw = generate_with_retry(
+                client,
+                prompt,
+                arguments.rate_limit_retries,
+                arguments.request_delay_seconds,
+            )
         except Exception as error:
             raise SystemExit(
                 f"Generation failed for {condition} run {run_index}: {error}"
@@ -215,6 +265,7 @@ def main() -> None:
             "template_sha256": sha256(template),
             "source_sha256": sha256(source),
             "local_context_sha256": sha256(json.dumps(local_context, sort_keys=True)),
+            "build_context_sha256": sha256(json.dumps(build_context, sort_keys=True)),
             "client": client.last_metadata,
         }
         (run_directory / "prompt.txt").write_text(prompt)

@@ -182,6 +182,25 @@ class ContextEnricher:
 
         file_name = component["file"]
 
+        source_facts = component.get(
+            "source_facts",
+            {}
+        )
+
+        if source_facts:
+
+            return {
+
+                "main_actor": bool(
+                    source_facts.get("main_actor", False)
+                ),
+
+                "async_support": bool(
+                    source_facts.get("async_support", False)
+                )
+
+            }
+
 
         # نسخه اولیه
         # بعداً با Parser دقیق‌تر می‌شود

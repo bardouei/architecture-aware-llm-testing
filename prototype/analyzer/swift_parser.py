@@ -174,7 +174,14 @@ class SwiftParser:
 
                 "implements": implements,
 
-                "dependencies": dependencies
+                "dependencies": dependencies,
+
+                "source_facts": {
+                    "main_actor": "@MainActor" in content,
+                    "async_support": bool(
+                        re.search(r"\b(?:async|await)\b", content)
+                    )
+                }
 
             })
 

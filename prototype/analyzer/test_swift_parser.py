@@ -80,6 +80,21 @@ class SwiftParserTests(unittest.TestCase):
 
         self.assertEqual(set(dependencies), {"HomeFeature", "SplashFeature"})
 
+    def test_extracts_source_concurrency_facts(self):
+        components = SwiftParser([]).extract_types(
+            """@MainActor
+struct AsyncFeature {
+  func load() async { await Task.yield() }
+}
+""",
+            "AsyncFeature.swift",
+        )
+
+        self.assertEqual(
+            components[0]["source_facts"],
+            {"main_actor": True, "async_support": True},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

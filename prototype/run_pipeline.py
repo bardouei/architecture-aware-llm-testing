@@ -62,6 +62,12 @@ def run(project, target, output):
         context["components"], architecture["protocols"]
     ).enrich()
     selected = ContextSelector(context).select(target)
+    selected["architecture"] = {
+        "patterns": PatternDetector().detect(
+            selected["selected_components"],
+            analysis["repository_metadata.json"]["files"],
+        )
+    }
     llm_context = LLMContextBuilder(selected).build()
     llm_context["source_evidence"] = collect_source_evidence(
         project,

@@ -312,6 +312,14 @@ class ContextBuilder:
                 ),
 
 
+            "source_facts":
+
+                component.get(
+                    "source_facts",
+                    {}
+                ),
+
+
 
             "responsibility":
 

@@ -8,6 +8,7 @@
   "build_system": "swift_package",
   "package_path": "Packages/FeatureSplash",
   "test_target": "FeatureSplashTests",
+  "framework_contract": "experiments/framework_contracts/tca-1.26-xctest.json",
   "complexity_stratum": "low",
   "max_local_files": 4
 }

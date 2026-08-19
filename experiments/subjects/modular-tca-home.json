@@ -8,6 +8,7 @@
   "build_system": "swift_package",
   "package_path": "Packages/FeatureHome",
   "test_target": "FeatureHomeTests",
+  "framework_contract": "experiments/framework_contracts/tca-1.26-xctest.json",
   "complexity_stratum": "medium",
   "max_local_files": 6
 }
