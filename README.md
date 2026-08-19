@@ -155,7 +155,7 @@ python experiments/analyze_generation_failures.py \
 
 The current protocol has three causally distinct conditions: source only, source plus
 automatically retrieved local definitions, and the same local definitions plus
-architecture facts. Protocol `three-condition-v4` gives every condition identical
+architecture facts. Protocol `three-condition-v5` gives every condition identical
 architecture-neutral build grounding: SwiftPM metadata, resolved framework
 versions, and compile-validated framework API contracts. This prevents framework
 API drift from being mistaken for an architecture effect. It also encodes exact
@@ -168,7 +168,7 @@ python experiments/generate_groq_study.py \
   --subject modular-tca-home \
   --condition all \
   --runs 3 \
-  --experiment-id modular-home-calibration-v4-n3 \
+  --experiment-id modular-home-calibration-v5-n3 \
   --request-delay-seconds 10 \
   --resume
 ```
@@ -183,7 +183,7 @@ python experiments/smoke_swiftpm_subjects.py
 python experiments/smoke_framework_contract.py
 
 python experiments/evaluate_swiftpm_study.py \
-  --experiment-id modular-home-calibration-v4-n3 \
+  --experiment-id modular-home-calibration-v5-n3 \
   --condition all \
   --resume
 ```

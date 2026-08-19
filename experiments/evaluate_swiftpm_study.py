@@ -43,6 +43,13 @@ def compact_mutation(result: dict) -> dict:
         "invalid": result.get("invalid_mutants", 0),
         "score": result.get("mutation_score", 0.0),
         "error": result.get("error"),
+        "results": [
+            {
+                key: mutation.get(key)
+                for key in ("id", "operator", "description", "line", "status")
+            }
+            for mutation in result.get("mutations", [])
+        ],
     }
 
 

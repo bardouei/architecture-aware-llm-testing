@@ -1,0 +1,56 @@
+{
+  "name": "Composable Architecture XCTest contract",
+  "validated_version": "1.26.1",
+  "protocol_revision": "v5",
+  "source": "Public interfaces and compile-passing tests in the locally resolved subject package",
+  "required_imports": [
+    "XCTest",
+    "ComposableArchitecture"
+  ],
+  "import_rule": "Import every module listed in source_imports when the test directly names a type from that module. The focal module still uses @testable import MODULE_NAME.",
+  "type_placeholders": {
+    "FEATURE": "Replace with the reducer type under test"
+  },
+  "available_api_patterns": [
+    "let store = TestStore(initialState: FEATURE.State()) { FEATURE() } withDependencies: { DEPENDENCY_OVERRIDES }",
+    "await store.send(ACTION)",
+    "await store.send(ACTION) { state in state.PROPERTY = EXPECTED_VALUE }",
+    "let clock = TestClock() only when production reads the injected clock dependency",
+    "await clock.advance(by: .seconds(N)) only for work driven by that injected clock",
+    "await store.receive(EXPECTED_EQUATABLE_ACTION)",
+    "await store.receive(EXPECTED_EQUATABLE_ACTION) { state in state.PROPERTY = EXPECTED_VALUE }",
+    "await store.receive(\\.ACTION_CASE)",
+    "await store.receive(\\.ACTION_CASE) { state in state.PROPERTY = EXPECTED_VALUE }"
+  ],
+  "receive_rule": "If the feature Action is not explicitly Equatable, or the received case contains Error, TaskResult, or another non-Equatable value, receive it with its case key path such as await store.receive(\\.postsResponse), never by constructing the associated action value. Use direct receive(EXPECTED_ACTION) only when Action is explicitly Equatable.",
+  "state_assertion_rule": "A TestStore send or receive assertion closure mutates a copy of expected State. Assign every expected changed property directly. Never call XCTAssert, unwrap optionals, inspect runtime values, or perform control flow inside this closure.",
+  "state_initializer_rule": "Use FEATURE.State() unless an exact different initializer declaration is supplied. Never infer a memberwise initializer for a type that declares its own init().",
+  "declaration_rule": "Construct only types whose exact declaration and initializer are supplied. If a required declaration is absent, omit that test behavior instead of guessing fields, helper values, protocols, or mock members.",
+  "test_isolation_rule": "Test one reducer behavior per test. Do not send unrelated asynchronous actions merely to prepare state for a synchronous action. Override every dependency exercised by the actions in that test.",
+  "async_rule": "An immediately returning dependency needs no clock advancement. TestClock controls only an injected clock used by production and does not control Task.sleep. Generate an in-flight cancellation test only when the supplied APIs permit a deterministic controllable suspension; otherwise omit that scenario. Never use real Task.sleep or wall-clock delay in a generated test.",
+  "assertion_closure_rule": "When an action causes no observable state mutation, call send or receive without a trailing closure. A trailing assertion closure is allowed only when it accepts the state parameter and changes it to the expected value.",
+  "unavailable_api_forms": [
+    "XCTAssert or optional force-unwrapping inside a TestStore state assertion closure",
+    "Task.sleep or other wall-clock waiting in generated tests or dependency stubs",
+    "TestClock when production does not read the injected clock dependency",
+    "await store.send(ACTION) { /* empty or comments only */ }",
+    "await store.receive(ACTION) { /* empty or comments only */ }",
+    "await store.receive(.NON_EQUATABLE_ASSOCIATED_CASE(...))",
+    "FEATURE.State(PROPERTY: VALUE) unless that initializer is explicitly supplied",
+    "FEATURE.reducer",
+    "FEATURE().reducer",
+    "TestScheduler",
+    "DispatchQueue.test",
+    "ContinuousClock.test()",
+    "ImmediateClock assigned to continuousClock",
+    "eraseToEffect()",
+    "eraseToAnyClock()",
+    "store.advance(...)"
+  ],
+  "concurrency_constraints": [
+    "Annotate an XCTestCase using TestStore with @MainActor under this Swift 6 toolchain",
+    "Await TestStore send and receive operations",
+    "Await TestClock advance operations",
+    "Create TestStore inside each test method; do not override XCTest setUp or tearDown with actor-isolated state"
+  ]
+}

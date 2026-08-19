@@ -4,10 +4,34 @@ from pathlib import Path
 
 import json
 
-from experiments.evaluate_swiftpm_study import build_report, prepare_workspace
+from experiments.evaluate_swiftpm_study import (
+    build_report,
+    compact_mutation,
+    prepare_workspace,
+)
 
 
 class EvaluateSwiftPMStudyTests(unittest.TestCase):
+    def test_compact_mutation_retains_per_mutant_status(self):
+        compact = compact_mutation(
+            {
+                "success": True,
+                "mutations": [
+                    {
+                        "id": "flip_boolean-1",
+                        "operator": "flip_boolean",
+                        "description": "Flipped Boolean",
+                        "line": 12,
+                        "status": "killed",
+                        "check": {"large": "diagnostics"},
+                    }
+                ],
+            }
+        )
+
+        self.assertEqual(compact["results"][0]["status"], "killed")
+        self.assertNotIn("check", compact["results"][0])
+
     def test_replaces_authored_tests_with_one_generated_suite(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

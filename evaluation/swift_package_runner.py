@@ -25,10 +25,20 @@ class SwiftPackageRunner:
     def _run(command: list[str], timeout: int) -> subprocess.CompletedProcess:
         return subprocess.run(command, capture_output=True, text=True, timeout=timeout)
 
+    @staticmethod
+    def _diagnostics(process: subprocess.CompletedProcess, limit: int = 12000) -> str:
+        """Keep both test output and compiler diagnostics under bounded storage."""
+        return (
+            "--- stdout ---\n"
+            + (process.stdout or "")[-limit:]
+            + "\n--- stderr ---\n"
+            + (process.stderr or "")[-limit:]
+        )
+
     def build(self) -> dict:
         try:
             process = self._run(self.build_command(), 900)
-            output = process.stdout + "\n" + process.stderr
+            output = self._diagnostics(process)
             return {"success": process.returncode == 0, "output": output[-5000:]}
         except Exception as error:
             return {"success": False, "error": str(error)}
@@ -36,20 +46,21 @@ class SwiftPackageRunner:
     def test(self) -> dict:
         try:
             process = self._run(self.test_command(), 900)
-            output = process.stdout + "\n" + process.stderr
+            full_output = (process.stdout or "") + "\n" + (process.stderr or "")
+            output = self._diagnostics(process)
             tests_executed = len(
-                re.findall(r"Test [Cc]ase .*? (?:passed|failed|skipped)", output)
+                re.findall(r"Test [Cc]ase .*? (?:passed|failed|skipped)", full_output)
             )
             compilation_failed = bool(
-                re.search(r"\.swift:\d+:\d+: error:", output)
-                or "emit-module command failed" in output
+                re.search(r"\.swift:\d+:\d+: error:", full_output)
+                or "emit-module command failed" in full_output
             )
             result = {
                 "success": process.returncode == 0 and tests_executed > 0,
                 "swift_success": process.returncode == 0,
                 "compilation_success": not compilation_failed,
                 "tests_executed": tests_executed,
-                "output": output[-5000:],
+                "output": output,
             }
             if process.returncode == 0 and tests_executed == 0:
                 result["error"] = "SwiftPM succeeded but executed zero XCTest cases"

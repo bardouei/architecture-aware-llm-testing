@@ -25,7 +25,7 @@ from prototype.run_pipeline import run as build_architecture_context
 
 
 CONDITIONS = ("source_only", "local_context", "architecture_aware")
-PROTOCOL_VERSION = "three-condition-v4"
+PROTOCOL_VERSION = "three-condition-v5"
 REQUEST_SETTINGS = {
     "temperature": 0.6,
     "max_completion_tokens": 4096,
@@ -33,9 +33,9 @@ REQUEST_SETTINGS = {
     "reasoning_effort": "none",
 }
 TEMPLATES = {
-    "source_only": ROOT / "prototype/llm/templates/source_grounded_v4_prompt.txt",
-    "local_context": ROOT / "prototype/llm/templates/local_grounded_v4_prompt.txt",
-    "architecture_aware": ROOT / "prototype/llm/templates/architecture_grounded_v4_prompt.txt",
+    "source_only": ROOT / "prototype/llm/templates/source_grounded_v5_prompt.txt",
+    "local_context": ROOT / "prototype/llm/templates/local_grounded_v5_prompt.txt",
+    "architecture_aware": ROOT / "prototype/llm/templates/architecture_grounded_v5_prompt.txt",
 }
 
 

@@ -35,6 +35,20 @@ class SwiftPackageRunnerTests(unittest.TestCase):
         self.assertFalse(result["success"])
         self.assertFalse(result["compilation_success"])
 
+    @patch.object(SwiftPackageRunner, "_run")
+    def test_preserves_stdout_failure_when_stderr_build_log_is_long(self, run):
+        run.return_value = subprocess.CompletedProcess(
+            [],
+            1,
+            "Test case 'FeatureTests.testOne' failed: expected state",
+            "build log\n" * 3000,
+        )
+
+        result = SwiftPackageRunner("Package", "FeatureTests").test()
+
+        self.assertIn("expected state", result["output"])
+        self.assertIn("build log", result["output"])
+
 
 if __name__ == "__main__":
     unittest.main()

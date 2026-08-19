@@ -15,8 +15,8 @@ from experiments.generate_groq_study import (
 
 
 class GenerateGroqStudyTests(unittest.TestCase):
-    def test_uses_v4_protocol(self):
-        self.assertEqual(PROTOCOL_VERSION, "three-condition-v4")
+    def test_uses_v5_protocol(self):
+        self.assertEqual(PROTOCOL_VERSION, "three-condition-v5")
 
     def test_resume_initializes_manifest_in_empty_interrupted_directory(self):
         with TemporaryDirectory() as temporary_directory:
@@ -95,9 +95,10 @@ class GenerateGroqStudyTests(unittest.TestCase):
 
         self.assertTrue(all('"framework": "1.2.3"' in prompt for prompt in prompts))
         self.assertTrue(
-            all("empty or comment-only trailing closure" in prompt for prompt in prompts)
+            all("omit its assertion closure" in prompt for prompt in prompts)
         )
-        self.assertTrue(all("receive(\\.postsResponse)" in prompt for prompt in prompts))
+        self.assertTrue(all("case key path" in prompt for prompt in prompts))
+        self.assertTrue(all("never inspect" in prompt for prompt in prompts))
 
     def test_parses_provider_retry_delay(self):
         error = RuntimeError("429 rate_limit: Please try again in 960ms")
