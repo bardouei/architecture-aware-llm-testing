@@ -75,6 +75,28 @@ class MutationTestingTests(unittest.TestCase):
         self.assertEqual(result["mutations_tested"], 0)
         self.assertEqual(self.source_file.read_text(), SWIFT_SOURCE)
 
+    def test_reuses_an_already_verified_baseline(self):
+        compile_calls = 0
+        test_calls = 0
+
+        def compile_source():
+            nonlocal compile_calls
+            compile_calls += 1
+            return {"success": True}
+
+        def run_tests():
+            nonlocal test_calls
+            test_calls += 1
+            return {"success": True}
+
+        result = MutationTesting(
+            self.source_file, compile_source, run_tests
+        ).run(baseline_verified=True)
+
+        self.assertTrue(result["baseline"]["reused_verified_baseline"])
+        self.assertEqual(compile_calls, result["mutations_created"])
+        self.assertEqual(test_calls, result["mutations_created"])
+
     def test_restores_source_when_runner_raises(self):
         calls = 0
 

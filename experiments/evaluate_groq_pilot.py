@@ -43,6 +43,7 @@ def prepare_workspace(fixture: Path, workspace: Path, generated_test: Path) -> P
 def compact_mutation(result: dict) -> dict:
     return {
         "success": result.get("success", False),
+        "skipped": result.get("skipped", False),
         "created": result.get("mutations_created", 0),
         "tested": result.get("mutations_tested", 0),
         "killed": result.get("mutations_killed", 0),
@@ -53,6 +54,22 @@ def compact_mutation(result: dict) -> dict:
         "outcomes": {
             item["id"]: item["status"] for item in result.get("mutations", [])
         },
+    }
+
+
+def skipped_mutation(source: Path, reason: str) -> dict:
+    discovered = MutationTesting(source).create_mutation()
+    return {
+        "success": False,
+        "skipped": True,
+        "error": reason,
+        "mutations_created": discovered["mutations_created"],
+        "mutations_tested": 0,
+        "mutations_killed": 0,
+        "mutations_survived": 0,
+        "invalid_mutants": 0,
+        "mutation_score": 0.0,
+        "mutations": [],
     }
 
 
@@ -81,11 +98,15 @@ def evaluate_generated_test(generated_test: Path, workspace_root: Path) -> dict:
         if suite.get("success", False)
         else {"success": False, "coverage": 0, "skipped": True}
     )
-    mutation = MutationTesting(
-        source,
-        compilation_checker=CompilationChecker(project).check,
-        test_runner=test_runner.run,
-    ).run()
+    mutation = (
+        MutationTesting(
+            source,
+            compilation_checker=CompilationChecker(project).check,
+            test_runner=test_runner.run,
+        ).run(baseline_verified=True)
+        if suite.get("success", False)
+        else skipped_mutation(source, "Generated suite did not compile and pass")
+    )
     suite_diagnostic = suite.get("output", suite.get("error", ""))
     return {
         "application_build_success": application_build.get("success", False),
@@ -178,6 +199,11 @@ def parse_args() -> argparse.Namespace:
         choices=("baseline", "architecture_aware", "both"),
         default="both",
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Keep existing evaluation.json files and evaluate only missing runs",
+    )
     return parser.parse_args()
 
 
@@ -190,6 +216,7 @@ def main() -> None:
         CONDITIONS if arguments.condition == "both" else (arguments.condition,)
     )
     evaluated = 0
+    kept = 0
     for condition in conditions:
         generated_tests = sorted(
             (experiment / condition).glob("run-*/generated-test.swift")
@@ -198,6 +225,13 @@ def main() -> None:
             raise SystemExit(f"No generated tests found for condition: {condition}")
         for generated_test in generated_tests:
             evaluation_path = generated_test.parent / "evaluation.json"
+            if arguments.resume and evaluation_path.exists():
+                kept += 1
+                print(
+                    f"Kept {condition}/{generated_test.parent.name}: "
+                    "evaluation already exists"
+                )
+                continue
             with tempfile.TemporaryDirectory(prefix=f"aallt-{condition}-") as temporary:
                 result = evaluate_generated_test(generated_test, Path(temporary))
             evaluation_path.write_text(json.dumps(result, indent=2))
@@ -212,6 +246,8 @@ def main() -> None:
             )
     (experiment / "evaluation-report.md").write_text(build_report(experiment))
     print(f"Evaluated {evaluated} generated suite(s)")
+    if arguments.resume:
+        print(f"Kept {kept} existing evaluation(s)")
     print(f"Report: {experiment.relative_to(ROOT)}/evaluation-report.md")
 
 

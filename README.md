@@ -119,6 +119,16 @@ python experiments/evaluate_groq_pilot.py \
   --condition both
 ```
 
+Evaluation is checkpointed after every generated suite. Stop safely with `Ctrl+C`
+and continue without rerunning completed suites:
+
+```bash
+python experiments/evaluate_groq_pilot.py \
+  --experiment-id groq-smoke-001 \
+  --condition both \
+  --resume
+```
+
 The evaluator empties all fixture-authored test files inside the temporary copy,
 injects exactly one generated suite, and then runs application build, XCTest,
 target-file coverage, and the identical restore-safe mutant set. It writes
@@ -127,6 +137,9 @@ Failed generations are retained as failures rather than discarded.
 An Xcode exit code of zero is not sufficient: a suite passes only when at least one
 XCTest case actually executes. Production-target build, generated-test compilation,
 and test execution are reported separately.
+Mutation is skipped when the unmodified generated suite does not compile and pass;
+for a passing suite, its just-completed coverage run is reused as the verified
+mutation baseline instead of executing it again.
 The report includes both individual observations and unconditional aggregate rates;
 failed generations contribute zero coverage and mutation score.
 

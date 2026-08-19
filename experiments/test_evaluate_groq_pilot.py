@@ -9,6 +9,7 @@ from experiments.evaluate_groq_pilot import (
     build_report,
     compact_mutation,
     prepare_workspace,
+    skipped_mutation,
 )
 
 
@@ -44,6 +45,17 @@ class GeneratedPilotEvaluationTests(unittest.TestCase):
         )
         self.assertEqual(compact["outcomes"], {"m1": "killed"})
         self.assertNotIn("check", json.dumps(compact))
+
+    def test_skips_mutation_after_invalid_generated_suite(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "Target.swift"
+            source.write_text("final class Target { var enabled = true }")
+
+            result = skipped_mutation(source, "suite failed")
+
+            self.assertTrue(result["skipped"])
+            self.assertEqual(result["mutations_tested"], 0)
+            self.assertEqual(result["error"], "suite failed")
 
     def test_report_includes_saved_observations(self):
         with tempfile.TemporaryDirectory() as temporary:

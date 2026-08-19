@@ -119,7 +119,7 @@ class MutationTesting:
             "mutations": [mutant.public_dict() for mutant in mutants],
         }
 
-    def run(self) -> dict[str, object]:
+    def run(self, baseline_verified: bool = False) -> dict[str, object]:
         if self.compilation_checker is None or self.test_runner is None:
             raise ValueError(
                 "Mutation execution requires compilation_checker and test_runner"
@@ -127,7 +127,11 @@ class MutationTesting:
 
         original_source = self.source_file.read_text()
         mutants = self.discover_mutants()
-        baseline = self._run_checks()
+        baseline = (
+            {"success": True, "reused_verified_baseline": True}
+            if baseline_verified
+            else self._run_checks()
+        )
         if not baseline["success"]:
             return {
                 "success": False,
