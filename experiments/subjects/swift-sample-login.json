@@ -1,0 +1,11 @@
+{
+  "id": "swift-sample-login",
+  "dataset_id": "swift-sample-app",
+  "project": "datasets/fixtures/swift-sample-app",
+  "target": "LoginViewModel",
+  "source": "SwiftSampleApp/Feature/Login/LoginViewModel.swift",
+  "module_name": "SwiftSampleApp",
+  "build_system": "xcodebuild",
+  "test_target": "SwiftSampleAppTests",
+  "max_local_files": 4
+}

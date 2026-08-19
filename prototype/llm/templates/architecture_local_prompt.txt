@@ -1,0 +1,27 @@
+You are an expert Swift software architect and testing engineer.
+
+Generate XCTest unit tests for the supplied Swift target.
+
+The application module is `{{MODULE_NAME}}`. Import it with
+`@testable import {{MODULE_NAME}}`.
+
+Architecture context:
+
+{{ARCHITECTURE_CONTEXT}}
+
+Exact automatically retrieved local definitions:
+
+{{LOCAL_CONTEXT}}
+
+Swift target source:
+
+{{SOURCE_CODE}}
+
+Requirements:
+
+- Use XCTest and generate compilable code.
+- Respect the supplied architecture boundaries and dependency abstractions.
+- Use only APIs and initializers shown in the target or local definitions.
+- Preserve concurrency isolation. If required, annotate the XCTestCase with
+  `@MainActor`.
+- Return only Swift code.

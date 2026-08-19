@@ -87,6 +87,16 @@ class MutationTesting:
                 re.compile(r"\b(?:true|false)\b"),
                 lambda match: "false" if match.group(0) == "true" else "true",
             ),
+            (
+                "remove_state_assignment",
+                "Removed a reducer state update",
+                re.compile(
+                    r"(?P<indent>^[ \t]*)state\.(?P<target>[A-Za-z_]\w*)[ \t]*="
+                    r"(?![ \t]*(?:true\b|false\b|nil\b))[ \t]*(?P<value>[^\n]+)$",
+                    re.MULTILINE,
+                ),
+                lambda match: f"{match.group('indent')}_ = {match.group('value')}",
+            ),
         ]
 
         mutants: list[Mutant] = []

@@ -115,6 +115,23 @@ class MutationTestingTests(unittest.TestCase):
 
         self.assertEqual(self.source_file.read_text(), SWIFT_SOURCE)
 
+    def test_discovers_tca_state_mutants(self):
+        self.source_file.write_text(
+            """func reduce(state: inout State, posts: [Post], error: Error) {
+    state.isLoading = true
+    state.posts = posts
+    state.error = error.localizedDescription
+}
+"""
+        )
+
+        mutants = MutationTesting(self.source_file).discover_mutants()
+
+        self.assertEqual(
+            [mutant.operator for mutant in mutants],
+            ["flip_boolean", "remove_state_assignment", "remove_state_assignment"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
