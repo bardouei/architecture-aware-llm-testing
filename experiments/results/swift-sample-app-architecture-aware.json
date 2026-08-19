@@ -1,0 +1,20 @@
+{
+  "dataset_id": "swift-sample-app",
+  "approach": "architecture_aware",
+  "test_selector": "SwiftSampleAppTests/ArchitectureAwareLoginViewModelTests",
+  "compilation_success": true,
+  "test_success": true,
+  "target_coverage": 100.0,
+  "mutation": {
+    "created": 3,
+    "killed": 3,
+    "survived": 0,
+    "invalid": 0,
+    "score": 100.0,
+    "outcomes": {
+      "remove_async_result_assignment-1": "killed",
+      "remove_nil_assignment-1": "killed",
+      "swap_credential_arguments-1": "killed"
+    }
+  }
+}

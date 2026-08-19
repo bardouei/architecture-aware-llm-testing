@@ -1,397 +1,105 @@
-# Architecture-Aware Context Engineering for LLM-Based Unit Test Generation in Modular Software Systems
+# Architecture-Aware LLM Test Generation
 
-## Overview
+Research prototype for testing whether explicit software-architecture context
+improves LLM-generated XCTest suites for iOS applications.
 
-This repository contains the research project for investigating how
-software architecture knowledge can improve Large Language Model
-(LLM)-based unit test generation.
+## Research question
 
-Current LLM-based test generation approaches mainly rely on source code
-context. However, modern software systems are designed using
-architectural patterns, modular boundaries, dependency relationships,
-and abstraction layers.
+Does adding structured information about layers, dependencies, protocols,
+implementations, concurrency, and test constraints improve generated-test quality
+over a source-code-only prompt?
 
-This project explores whether providing structured architecture context
-to LLMs can improve:
+The primary outcome is fault detection measured with mutation testing. Compilation,
+test execution, target coverage, and architectural compliance are supporting
+outcomes.
 
--   Unit test correctness
--   Dependency understanding
--   Mock generation
--   Fault detection capability
--   Test maintainability
+## Repository layout
 
-------------------------------------------------------------------------
+```text
+datasets/
+  fixtures/                 controlled development subjects
+  projects/                 real-world candidate subjects
+  registry.json             provenance and eligibility source of truth
+prototype/
+  analyzer/                 Swift repository scanning and architecture extraction
+  context/                  enrichment and target-context selection
+  llm/                      prompt construction and client abstraction
+evaluation/                 Xcode, coverage, and mutation evaluators
+experiments/
+  fixtures/                 deterministic/mock generation fixtures
+  results/                  verified, compact experiment results
+docs/                       research design, status, and reproducibility notes
+```
 
-# Research Motivation
+Paper drafting is intentionally deferred until the experimental protocol and
+dataset are mature.
 
-Large Language Models have demonstrated strong capabilities in software
-engineering tasks such as:
+## Dataset status
 
--   Code generation
--   Code completion
--   Code explanation
--   Automated test generation
+- `swift-sample-app`: controlled MVVM/Clean Architecture fixture; validated.
+- `i2tocr-ios`: real-world MVVM/Clean Architecture candidate pinned to an immutable
+  upstream commit; build and license eligibility are still pending.
 
-However, generated tests often lack awareness of:
+See [datasets/registry.json](datasets/registry.json) for machine-readable metadata.
 
--   Software architecture
--   Component responsibilities
--   Module boundaries
--   Dependency relationships
--   Design patterns
+## Reproduce current checks
 
-For example, an LLM may generate a test for a ViewModel but fail to
-understand that:
+Run Python tests:
 
-    ViewModel
-        |
-        v
-    UseCase
-        |
-        v
-    Repository
+```bash
+python3 -m unittest discover -v
+```
 
-requires dependency isolation and mock generation.
+Analyze either Swift project:
 
-This research investigates whether architectural understanding can
-improve generated tests.
+```bash
+python3 -m prototype.analyzer.main \
+  datasets/projects/i2tocr-ios \
+  --output artifacts/analysis/i2tocr-ios
+```
 
-------------------------------------------------------------------------
+Run the validated isolated fixture comparison on macOS with Xcode and an iPhone 17
+simulator:
 
-# Research Question
+```bash
+python3 experiments/run_swift_sample_comparison.py
+```
 
-The main research question is:
+Run either condition independently:
 
-> Does architecture-aware context improve the quality of LLM-generated
-> unit tests compared with traditional source-code-only approaches?
+```bash
+# Existing/source-only method
+python3 experiments/run_baseline_pipeline.py
 
-Additional questions:
+# Proposed architecture-aware method
+python3 experiments/run_architecture_pipeline.py
+```
 
-1.  Which architectural information contributes most to test generation
-    quality?
-2.  Can architecture-aware context improve maintainability and fault
-    detection?
-3.  How does architectural knowledge affect testing of modular software
-    systems?
+Rebuild and print the comparison table without rerunning Xcode:
 
-------------------------------------------------------------------------
+```bash
+python3 experiments/render_results.py
+```
 
-# Proposed Approach
+Each condition compiles the same production target, runs only its own XCTest suite,
+measures target-file coverage, executes the same mutants, and writes a compact JSON
+summary under `experiments/results/`. The current suites are frozen controlled-pilot
+fixtures. Real-LLM generation and provenance capture are intentionally listed as
+remaining research work rather than simulated by these evaluation commands.
 
-The proposed framework introduces an architecture-aware context
-engineering pipeline:
+## Current evidence
 
-    Software Repository
+For the single validated `LoginViewModel` subject:
 
-            |
-            v
+| Metric | Baseline | Architecture-aware |
+|---|---:|---:|
+| Compilation | 100% | 100% |
+| Test execution | 100% | 100% |
+| Target coverage | 91.67% | 100% |
+| Mutation score | 33.33% | 100% |
 
-    Architecture Analyzer
-
-            |
-            v
-
-    Architecture Context Schema
-
-            |
-            v
-
-    Context Engineering Layer
-
-            |
-            v
-
-    Large Language Model
-
-            |
-            v
-
-    Generated Unit Tests
-
-            |
-            v
-
-    Quality Evaluation
-
-------------------------------------------------------------------------
-
-# Architecture Context Schema
-
-The project introduces a structured representation of software
-architecture information.
-
-The schema includes:
-
-## System Context
-
-General project information:
-
--   Programming language
--   Frameworks
--   Architecture style
--   Testing framework
-
-------------------------------------------------------------------------
-
-## Module Context
-
-Information about:
-
--   Modules
--   Responsibilities
--   Dependencies
--   Architectural boundaries
-
-Example:
-
-    Authentication Module
-
-    Depends on:
-
-    Domain
-    Network
-    Storage
-
-------------------------------------------------------------------------
-
-## Component Context
-
-Information about:
-
--   Component type
--   Architectural role
--   Responsibilities
-
-Example:
-
-    LoginViewModel
-
-    Role:
-    Presentation Layer
-
-    Pattern:
-    MVVM
-
-------------------------------------------------------------------------
-
-## Dependency Context
-
-Represents relationships between components.
-
-Example:
-
-    LoginViewModel
-
-    depends on
-
-    LoginUseCase
-
-    implemented through
-
-    Protocol
-
-------------------------------------------------------------------------
-
-## Interface Context
-
-Represents:
-
--   Protocols
--   Interfaces
--   Abstractions
--   Implementations
-
-------------------------------------------------------------------------
-
-## Design Pattern Context
-
-Supports patterns such as:
-
--   MVVM
--   Clean Architecture
--   VIPER
--   TCA
--   Repository Pattern
--   Dependency Injection
-
-------------------------------------------------------------------------
-
-## Concurrency Context
-
-Represents:
-
--   async/await usage
--   Actors
--   Concurrent operations
-
-------------------------------------------------------------------------
-
-## Testing Context
-
-Defines:
-
--   Testing framework
--   Mocking strategy
--   Testing style
-
-------------------------------------------------------------------------
-
-# Experimental Design
-
-The research compares three approaches.
-
-## Baseline 1: Code Only
-
-    Source Code
-
-         |
-
-        LLM
-
-         |
-
-    Generated Unit Tests
-
-------------------------------------------------------------------------
-
-## Baseline 2: Code + Local Context
-
-    Source Code
-
-    +
-
-    Related Files
-
-         |
-
-        LLM
-
-         |
-
-    Generated Unit Tests
-
-------------------------------------------------------------------------
-
-## Proposed Approach: Architecture-Aware Context
-
-    Source Code
-
-    +
-
-    Architecture Context
-
-    +
-
-    Dependency Graph
-
-    +
-
-    Design Patterns
-
-    +
-
-    Testing Strategy
-
-         |
-
-        LLM
-
-         |
-
-    Generated Unit Tests
-
-------------------------------------------------------------------------
-
-# Evaluation Metrics
-
-Generated tests are evaluated using:
-
-  Metric                     Purpose
-  -------------------------- ----------------------------------
-  Compilation Success Rate   Can generated tests execute?
-  Code Coverage              Tested code percentage
-  Mutation Score             Ability to detect faults
-  Fault Detection Rate       Real defect detection capability
-  Test Maintainability       Quality and readability
-  Mock Correctness           Dependency isolation quality
-
-------------------------------------------------------------------------
-
-# Supported Architecture Examples
-
-Initial research focuses on modular software architectures:
-
-## MVVM
-
-    View
-     |
-    ViewModel
-     |
-    Repository
-
-## Clean Architecture
-
-    Presentation
-
-    Domain
-
-    Data
-
-## TCA
-
-    State
-
-    Action
-
-    Reducer
-
-    Effect
-
-    Dependency
-
-------------------------------------------------------------------------
-
-# Repository Structure
-
-    architecture-aware-llm-testing
-
-    ├── Research_Proposal.md
-    ├── Literature_Review.md
-    ├── Architecture_Context.md
-    ├── Proposed_Framework.md
-    ├── Experiment_Design.md
-    ├── Research_Roadmap.md
-    │
-    └── Prototype
-
-------------------------------------------------------------------------
-
-# Research Status
-
-## Completed
-
--   Research topic definition
--   Initial literature review
--   Research gap identification
--   Architecture Context Schema design
--   Proposed framework design
--   Experiment design
-
-## Next Steps
-
-1.  Design prototype architecture
-2.  Implement architecture extraction
-3.  Build LLM testing pipeline
-4.  Run experiments
-5.  Analyze results
-6.  Prepare research paper
-
-------------------------------------------------------------------------
-
-# Goal
-
-The goal of this project is not to train a new Large Language Model.
-
-Instead, the research investigates how structured software architecture
-knowledge can improve existing LLM capabilities for automated unit test
-generation.
+This is a successful pipeline validation, not sufficient evidence for a general
+research claim. See [docs/project-status.md](docs/project-status.md) for the full
+readiness assessment, [docs/system-overview.md](docs/system-overview.md) for the
+end-to-end method, and [docs/journal-readiness.md](docs/journal-readiness.md) for
+the publication plan.

@@ -1,0 +1,45 @@
+{
+  "comparison": {
+    "baseline": {
+      "compilation_success": 1,
+      "test_success": 1,
+      "coverage": 91.67,
+      "mutation_score": 33.33
+    },
+    "architecture_aware": {
+      "compilation_success": 1,
+      "test_success": 1,
+      "coverage": 100.0,
+      "mutation_score": 100.0
+    }
+  },
+  "improvements": {
+    "compilation_success": {
+      "baseline": 1,
+      "architecture_aware": 1,
+      "improvement": 0
+    },
+    "test_success": {
+      "baseline": 1,
+      "architecture_aware": 1,
+      "improvement": 0
+    },
+    "coverage": {
+      "baseline": 91.67,
+      "architecture_aware": 100.0,
+      "improvement": 8.33
+    },
+    "mutation_score": {
+      "baseline": 33.33,
+      "architecture_aware": 100.0,
+      "improvement": 66.67
+    }
+  },
+  "experimental_control": {
+    "same_production_source": "datasets/fixtures/swift-sample-app/SwiftSampleApp/Feature/Login/LoginViewModel.swift",
+    "same_mutants": true,
+    "isolated_with_xcode_only_testing": true,
+    "baseline_selector": "SwiftSampleAppTests/GeneratedLoginViewModelTests",
+    "architecture_selector": "SwiftSampleAppTests/ArchitectureAwareLoginViewModelTests"
+  }
+}

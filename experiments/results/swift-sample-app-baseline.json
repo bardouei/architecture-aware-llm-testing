@@ -1,0 +1,20 @@
+{
+  "dataset_id": "swift-sample-app",
+  "approach": "baseline",
+  "test_selector": "SwiftSampleAppTests/GeneratedLoginViewModelTests",
+  "compilation_success": true,
+  "test_success": true,
+  "target_coverage": 91.67,
+  "mutation": {
+    "created": 3,
+    "killed": 1,
+    "survived": 2,
+    "invalid": 0,
+    "score": 33.33,
+    "outcomes": {
+      "remove_async_result_assignment-1": "killed",
+      "remove_nil_assignment-1": "survived",
+      "swap_credential_arguments-1": "survived"
+    }
+  }
+}
