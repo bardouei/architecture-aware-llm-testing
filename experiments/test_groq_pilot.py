@@ -1,6 +1,6 @@
 import unittest
 
-from experiments.generate_groq_pilot import build_prompt, sha256
+from experiments.generate_groq_pilot import REQUEST_SETTINGS, build_prompt, sha256
 
 
 class GroqPilotTests(unittest.TestCase):
@@ -17,6 +17,10 @@ class GroqPilotTests(unittest.TestCase):
 
     def test_sha256_is_stable(self):
         self.assertEqual(sha256("prompt"), sha256("prompt"))
+
+    def test_pilot_uses_controlled_qwen_settings(self):
+        self.assertEqual(REQUEST_SETTINGS["temperature"], 0.6)
+        self.assertEqual(REQUEST_SETTINGS["reasoning_format"], "hidden")
 
 
 if __name__ == "__main__":

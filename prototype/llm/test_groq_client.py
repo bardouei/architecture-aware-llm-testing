@@ -49,6 +49,28 @@ class GroqClientTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "AALLT_MODEL"):
                 GroqClient(client=object())
 
+    def test_sends_controlled_generation_settings(self):
+        completions = FakeCompletions()
+        sdk = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+        client = GroqClient(
+            model="test-model",
+            client=sdk,
+            temperature=0.6,
+            max_completion_tokens=4096,
+            reasoning_format="hidden",
+        )
+
+        client.generate("generate")
+
+        self.assertEqual(completions.arguments["temperature"], 0.6)
+        self.assertEqual(completions.arguments["max_completion_tokens"], 4096)
+        self.assertEqual(
+            completions.arguments["extra_body"], {"reasoning_format": "hidden"}
+        )
+        self.assertEqual(
+            client.last_metadata["request_settings"], client.request_settings
+        )
+
     def test_requires_api_key_for_real_client(self):
         with patch.dict("os.environ", {}, clear=True):
             with self.assertRaisesRegex(ValueError, "GROQ_API_KEY"):

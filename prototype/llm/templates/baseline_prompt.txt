@@ -2,11 +2,15 @@ You are an expert Swift developer.
 
 Generate XCTest unit tests for this Swift class.
 
+The application module is `{{MODULE_NAME}}`. Import it with
+`@testable import {{MODULE_NAME}}`.
+
 Requirements:
 
 - Use XCTest.
 - Generate compilable tests.
 - Mock dependencies if necessary.
+- Do not invent unavailable type initializers or APIs.
 - Follow Swift best practices.
 
 

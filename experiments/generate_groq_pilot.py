@@ -24,6 +24,11 @@ DATASET_ID = "swift-sample-app"
 PROJECT = ROOT / "datasets/fixtures/swift-sample-app"
 SOURCE = PROJECT / "SwiftSampleApp/Feature/Login/LoginViewModel.swift"
 TARGET = "LoginViewModel"
+REQUEST_SETTINGS = {
+    "temperature": 0.6,
+    "max_completion_tokens": 4096,
+    "reasoning_format": "hidden",
+}
 TEMPLATES = {
     "baseline": ROOT / "prototype/llm/templates/baseline_prompt.txt",
     "architecture_aware": ROOT / "prototype/llm/templates/architecture_prompt.txt",
@@ -37,7 +42,12 @@ def sha256(text: str) -> str:
 def build_prompt(condition: str, source: str, context: dict) -> tuple[str, str]:
     template = TEMPLATES[condition].read_text()
     prompt_context = context if condition == "architecture_aware" else {}
-    return PromptBuilder(template).build(prompt_context, source), template
+    return (
+        PromptBuilder(template).build(
+            prompt_context, source, module_name="SwiftSampleApp"
+        ),
+        template,
+    )
 
 
 def generate_run(
@@ -102,7 +112,10 @@ def main() -> None:
     )
 
     try:
-        client = GroqClient(model=os.environ.get("AALLT_MODEL"))
+        client = GroqClient(
+            model=os.environ.get("AALLT_MODEL"),
+            **REQUEST_SETTINGS,
+        )
     except ValueError as error:
         raise SystemExit(f"Configuration error: {error}") from error
 
@@ -121,6 +134,7 @@ def main() -> None:
         "requested_model": client.model,
         "conditions": list(conditions),
         "runs_per_condition": arguments.runs,
+        "request_settings": REQUEST_SETTINGS,
     }
     output.mkdir(parents=True, exist_ok=True)
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2))

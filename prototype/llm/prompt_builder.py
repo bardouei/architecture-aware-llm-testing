@@ -18,7 +18,8 @@ class PromptBuilder:
     def build(
         self,
         architecture_context,
-        source_code
+        source_code,
+        module_name="SwiftSampleApp"
     ):
 
 
@@ -39,6 +40,15 @@ class PromptBuilder:
             "{{SOURCE_CODE}}",
 
             source_code
+
+        )
+
+
+        prompt = prompt.replace(
+
+            "{{MODULE_NAME}}",
+
+            module_name
 
         )
 

@@ -3,6 +3,9 @@ You are an expert Swift software architect and testing engineer.
 
 Generate XCTest unit tests using the provided architecture context.
 
+The application module is `{{MODULE_NAME}}`. Import it with
+`@testable import {{MODULE_NAME}}`.
+
 
 Use only architectural facts present in the supplied context. Do not assume an
 architecture pattern, dependency abstraction, or concurrency requirement that is
@@ -28,6 +31,8 @@ Requirements:
 - Respect architecture boundaries.
 - Do not test concrete implementations when protocols exist.
 - Use protocol mocks.
+- Use exact declarations in `source_evidence` when implementing mocks or creating
+  values; do not invent type initializers or APIs.
 
 
 Return only Swift code.

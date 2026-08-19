@@ -18,6 +18,9 @@ class GroqClient(LLMClient):
         api_key: Optional[str] = None,
         client: Any = None,
         clock: Callable[[], float] = time.perf_counter,
+        temperature: Optional[float] = None,
+        max_completion_tokens: Optional[int] = None,
+        reasoning_format: Optional[str] = None,
     ) -> None:
         self.model = model or os.environ.get("AALLT_MODEL")
         if not self.model:
@@ -38,14 +41,30 @@ class GroqClient(LLMClient):
 
         self.client = client
         self.clock = clock
+        self.request_settings = {
+            "temperature": temperature,
+            "max_completion_tokens": max_completion_tokens,
+            "reasoning_format": reasoning_format,
+        }
         self.last_metadata: dict[str, Any] = {}
 
     def generate(self, prompt: str) -> str:
         started = self.clock()
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-        )
+        request: dict[str, Any] = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        if self.request_settings["temperature"] is not None:
+            request["temperature"] = self.request_settings["temperature"]
+        if self.request_settings["max_completion_tokens"] is not None:
+            request["max_completion_tokens"] = self.request_settings[
+                "max_completion_tokens"
+            ]
+        if self.request_settings["reasoning_format"] is not None:
+            request["extra_body"] = {
+                "reasoning_format": self.request_settings["reasoning_format"]
+            }
+        response = self.client.chat.completions.create(**request)
         elapsed_ms = round((self.clock() - started) * 1000, 2)
         usage = getattr(response, "usage", None)
         self.last_metadata = {
@@ -55,5 +74,6 @@ class GroqClient(LLMClient):
             "latency_ms": elapsed_ms,
             "usage": usage.model_dump() if hasattr(usage, "model_dump") else usage,
             "base_url": self.BASE_URL,
+            "request_settings": self.request_settings,
         }
         return response.choices[0].message.content or ""

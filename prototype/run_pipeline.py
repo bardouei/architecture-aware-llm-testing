@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+import re
 
 from prototype.analyzer.main import analyze_repository
 from prototype.context.context_builder import ContextBuilder
@@ -10,6 +11,33 @@ from prototype.context.context_selector import ContextSelector
 from prototype.context.enrichment.context_enricher import ContextEnricher
 from prototype.context.llm_context_builder import LLMContextBuilder
 from prototype.context.pattern_detector import PatternDetector
+
+
+DECLARATION = re.compile(r"\b(?:class|struct|actor|protocol|enum)\s+(\w+)")
+
+
+def collect_source_evidence(project, source_files, selected_components, target):
+    """Collect exact files declaring architecture-selected non-target symbols."""
+    selected_names = {
+        component["name"]
+        for component in selected_components
+        if component.get("name") != target
+    }
+    evidence = []
+    for relative_path in source_files:
+        path = project / relative_path
+        content = path.read_text()
+        declared = set(DECLARATION.findall(content))
+        matched = sorted(declared & selected_names)
+        if matched:
+            evidence.append(
+                {
+                    "path": relative_path,
+                    "selected_symbols": matched,
+                    "content": content,
+                }
+            )
+    return evidence
 
 
 def run(project, target, output):
@@ -35,6 +63,12 @@ def run(project, target, output):
     ).enrich()
     selected = ContextSelector(context).select(target)
     llm_context = LLMContextBuilder(selected).build()
+    llm_context["source_evidence"] = collect_source_evidence(
+        project,
+        analysis["repository_metadata.json"]["files"]["source_files"],
+        selected["selected_components"],
+        target,
+    )
 
     artifacts = {
         "architecture-context.json": context,
