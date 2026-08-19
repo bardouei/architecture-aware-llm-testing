@@ -44,6 +44,27 @@ See [datasets/registry.json](datasets/registry.json) for machine-readable metada
 
 ## Reproduce current checks
 
+Create the project-local Python environment and install dependencies:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Configure a real OpenAI API connection without committing credentials:
+
+```bash
+export OPENAI_API_KEY="..."
+export AALLT_MODEL="an-available-model-id"
+python experiments/check_openai_connection.py
+```
+
+The OpenAI adapter uses the Responses API with remote response storage disabled and
+captures request ID, resolved model, latency, and token usage for provenance. The
+API smoke check is not an experimental generation and should be run only after the
+two environment variables are set.
+
 Run Python tests:
 
 ```bash
