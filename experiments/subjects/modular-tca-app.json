@@ -8,7 +8,7 @@
   "build_system": "swift_package",
   "package_path": "Packages/AppFeature",
   "test_target": "AppFeatureTests",
-  "framework_contract": "experiments/framework_contracts/tca-1.26-xctest.json",
+  "framework_contract": "experiments/framework_contracts/tca-1.26-xctest-v3.json",
   "complexity_stratum": "high",
   "max_local_files": 6
 }

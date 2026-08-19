@@ -84,8 +84,8 @@ def build_report(experiment: Path, conditions: tuple[str, ...]) -> str:
     rows = [
         "# SwiftPM Generated-Suite Evaluation",
         "",
-        "| Condition | N | Compile rate | Test success | Mean mutation |",
-        "|---|---:|---:|---:|---:|",
+        "| Condition | N | Compile rate | Test success | Mutants/run | Mean mutation |",
+        "|---|---:|---:|---:|---:|---:|",
     ]
     for condition in conditions:
         results = [
@@ -99,16 +99,32 @@ def build_report(experiment: Path, conditions: tuple[str, ...]) -> str:
             f"| {condition} | {count} | "
             f"{100 * sum(r['generated_suite_compilation_success'] for r in results) / count:.2f}% | "
             f"{100 * sum(r['generated_suite_success'] for r in results) / count:.2f}% | "
+            f"{mean(r['mutation']['created'] for r in results):.2f} | "
             f"{mean(r['mutation']['score'] for r in results):.2f}% |"
         )
+    local_context_path = experiment / "context/local-context.json"
+    local_context_count = (
+        len(json.loads(local_context_path.read_text()))
+        if local_context_path.is_file()
+        else None
+    )
     rows.extend(
         [
             "",
             "Failed suites remain in every denominator. SwiftPM focal-file coverage is "
             "not yet reported by this evaluator; mutation score is the primary quality outcome.",
-            "",
         ]
     )
+    if local_context_count == 0 and "local_context" in conditions:
+        rows.extend(
+            [
+                "",
+                "**Treatment warning:** local-context retrieval returned zero files for this "
+                "subject. The local-context condition therefore has no substantive local-code "
+                "treatment and must not be interpreted as evidence for retrieval effectiveness.",
+            ]
+        )
+    rows.append("")
     return "\n".join(rows)
 
 

@@ -19,4 +19,33 @@ final class TCAFrameworkContractSmokeTests: XCTestCase {
         await clock.advance(by: .seconds(2))
         await store.receive(.finished)
     }
+
+    func testVerifiedCancellationAPI() async {
+        let clock = TestClock()
+        let store = TestStore(initialState: SplashFeature.State()) {
+            SplashFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onAppear)
+        await store.send(.onDisappear)
+        await clock.advance(by: .seconds(3))
+    }
+
+    func testVerifiedCancelInFlightAPI() async {
+        let clock = TestClock()
+        let store = TestStore(initialState: SplashFeature.State()) {
+            SplashFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onAppear)
+        await clock.advance(by: .seconds(1))
+        await store.send(.onAppear)
+        await clock.advance(by: .seconds(1))
+        await clock.advance(by: .seconds(1))
+        await store.receive(.finished)
+    }
 }

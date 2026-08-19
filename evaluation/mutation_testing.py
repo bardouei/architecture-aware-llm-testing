@@ -88,6 +88,38 @@ class MutationTesting:
                 lambda match: "false" if match.group(0) == "true" else "true",
             ),
             (
+                "increase_clock_duration",
+                "Increased an injected clock sleep duration",
+                re.compile(
+                    r"(?P<prefix>\.sleep\(for:\s*\.seconds\()"
+                    r"(?P<duration>\d+)(?P<suffix>\)\))"
+                ),
+                lambda match: (
+                    f"{match.group('prefix')}"
+                    f"{int(match.group('duration')) + 1}"
+                    f"{match.group('suffix')}"
+                ),
+            ),
+            (
+                "remove_cancellable_effect",
+                "Removed a TCA effect cancellation registration",
+                re.compile(
+                    r"(?P<indent>^[ \t]*)\.cancellable\("
+                    r"id:\s*[^,\n]+,\s*cancelInFlight:\s*(?:true|false)\)",
+                    re.MULTILINE,
+                ),
+                lambda match: "",
+            ),
+            (
+                "neutralize_cancel_action",
+                "Replaced a TCA cancellation effect with no effect",
+                re.compile(
+                    r"(?P<indent>^[ \t]*)return\s+\.cancel\(id:\s*[^)]+\)",
+                    re.MULTILINE,
+                ),
+                lambda match: f"{match.group('indent')}return .none",
+            ),
+            (
                 "remove_state_assignment",
                 "Removed a reducer state update",
                 re.compile(

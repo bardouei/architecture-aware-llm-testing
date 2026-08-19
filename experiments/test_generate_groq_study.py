@@ -5,11 +5,15 @@ from experiments.generate_groq_study import (
     build_generation_schedule,
     build_prompt,
     generate_with_retry,
+    PROTOCOL_VERSION,
     rate_limit_delay,
 )
 
 
 class GenerateGroqStudyTests(unittest.TestCase):
+    def test_uses_v3_protocol(self):
+        self.assertEqual(PROTOCOL_VERSION, "three-condition-v3")
+
     def test_rotates_three_condition_order(self):
         conditions = ("source_only", "local_context", "architecture_aware")
 
@@ -62,6 +66,9 @@ class GenerateGroqStudyTests(unittest.TestCase):
         ]
 
         self.assertTrue(all('"framework": "1.2.3"' in prompt for prompt in prompts))
+        self.assertTrue(
+            all("empty or comment-only trailing closure" in prompt for prompt in prompts)
+        )
 
     def test_parses_provider_retry_delay(self):
         error = RuntimeError("429 rate_limit: Please try again in 960ms")

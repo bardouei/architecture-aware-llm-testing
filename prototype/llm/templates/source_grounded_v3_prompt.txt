@@ -1,0 +1,24 @@
+You are an expert Swift developer generating a compile-ready XCTest suite.
+
+The application module is `{{MODULE_NAME}}`. Import it with
+`@testable import {{MODULE_NAME}}`.
+
+Build and framework API context (verified and mandatory):
+
+{{BUILD_CONTEXT}}
+
+Swift target source:
+
+{{SOURCE_CODE}}
+
+Requirements:
+
+- Use XCTest.
+- Follow the verified framework API patterns exactly, substituting only the
+  documented placeholders and target actions.
+- Never use an API listed under `unavailable_api_forms`.
+- When a TestStore action has no state mutation, omit its assertion closure; never
+  generate an empty or comment-only trailing closure.
+- Preserve the concurrency constraints in the build context.
+- Do not invent initializers, schedulers, clocks, dependency keys, or helper APIs.
+- Create deterministic tests and return only Swift code.

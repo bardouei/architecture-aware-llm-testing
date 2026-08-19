@@ -132,6 +132,38 @@ class MutationTestingTests(unittest.TestCase):
             ["flip_boolean", "remove_state_assignment", "remove_state_assignment"],
         )
 
+    def test_discovers_tca_clock_and_cancellation_mutants(self):
+        self.source_file.write_text(
+            """return .run { send in
+    try await clock.sleep(for: .seconds(2))
+    await send(.finished)
+}
+.cancellable(id: CancelID.timer, cancelInFlight: true)
+
+return .cancel(id: CancelID.timer)
+"""
+        )
+
+        mutants = MutationTesting(self.source_file).discover_mutants()
+
+        self.assertEqual(len(mutants), 4)
+        self.assertEqual(
+            {mutant.operator for mutant in mutants},
+            {
+                "flip_boolean",
+                "increase_clock_duration",
+                "remove_cancellable_effect",
+                "neutralize_cancel_action",
+            },
+        )
+        mutated = {
+            mutant.operator: mutant.replacement
+            for mutant in mutants
+        }
+        self.assertIn(".seconds(3)", mutated["increase_clock_duration"])
+        self.assertEqual(mutated["remove_cancellable_effect"], "")
+        self.assertIn("return .none", mutated["neutralize_cancel_action"])
+
 
 if __name__ == "__main__":
     unittest.main()

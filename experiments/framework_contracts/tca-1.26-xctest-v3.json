@@ -1,0 +1,42 @@
+{
+  "name": "Composable Architecture XCTest contract",
+  "validated_version": "1.26.1",
+  "protocol_revision": "v3",
+  "source": "Public interfaces in the locally resolved dependency checkout; compile-validated against the subject package",
+  "required_imports": [
+    "XCTest",
+    "ComposableArchitecture"
+  ],
+  "type_placeholders": {
+    "FEATURE": "Replace with the reducer type under test"
+  },
+  "available_api_patterns": [
+    "let clock = TestClock()",
+    "let store = TestStore(initialState: FEATURE.State()) { FEATURE() } withDependencies: { $0.continuousClock = clock }",
+    "await store.send(ACTION)",
+    "await store.send(ACTION) { state in state.PROPERTY = EXPECTED_VALUE }",
+    "await clock.advance(by: .seconds(N))",
+    "await store.receive(EXPECTED_ACTION)",
+    "await store.receive(EXPECTED_ACTION) { state in state.PROPERTY = EXPECTED_VALUE }"
+  ],
+  "assertion_closure_rule": "When an action causes no observable state mutation, call send or receive without a trailing closure. A trailing assertion closure is allowed only when it accepts the state parameter and changes it to the expected value.",
+  "unavailable_api_forms": [
+    "await store.send(ACTION) { /* empty or comments only */ }",
+    "await store.receive(ACTION) { /* empty or comments only */ }",
+    "FEATURE.reducer",
+    "FEATURE().reducer",
+    "TestScheduler",
+    "DispatchQueue.test",
+    "ContinuousClock.test()",
+    "ImmediateClock assigned to continuousClock",
+    "eraseToEffect()",
+    "eraseToAnyClock()",
+    "store.advance(...)"
+  ],
+  "concurrency_constraints": [
+    "Annotate an XCTestCase using TestStore with @MainActor under this Swift 6 toolchain",
+    "Await TestStore send and receive operations",
+    "Await TestClock advance operations",
+    "Create TestStore inside each test method; do not override XCTest setUp or tearDown with actor-isolated state"
+  ]
+}
