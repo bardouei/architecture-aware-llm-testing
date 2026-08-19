@@ -1,15 +1,18 @@
 You are an expert Swift developer.
 
-Generate XCTest unit tests for the following Swift code.
+Generate XCTest unit tests for this Swift class.
 
 Requirements:
 
-- Use XCTest framework.
-- Generate compilable Swift code.
-- Follow Swift testing best practices.
-- Cover normal and edge cases.
-- Mock external dependencies when necessary.
+- Use XCTest.
+- Generate compilable tests.
+- Mock dependencies if necessary.
+- Follow Swift best practices.
 
-Swift Code:
 
-{source_code}
+Swift Source Code:
+
+{{SOURCE_CODE}}
+
+
+Return only Swift code.

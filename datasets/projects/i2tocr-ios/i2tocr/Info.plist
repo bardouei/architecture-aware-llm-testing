@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Camera Usage -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs camera access to capture images for text extraction</string>
+    
+    <!-- Photo Library Usage -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs photo library access to select images for text extraction</string>
+    
+    <!-- Face ID Usage - NON-EMPTY STRING -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>This app uses Face ID to securely authenticate your identity and protect your OCR documents</string>
+    
+    <!-- Documents Folder Usage - NON-EMPTY STRING -->
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>This app needs access to Documents folder to import images for OCR text extraction</string>
+    
+    <!-- Support Opening Documents In Place -->
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    
+    <!-- Document Types -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Image Files</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.image</string>
+            </array>
+        </dict>
+    </array>
+    
+    <!-- Scene Manifest -->
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <false/>
+        <key>UISceneConfigurations</key>
+        <dict>
+            <key>UIWindowSceneSessionRoleApplication</key>
+            <array>
+                <dict>
+                    <key>UISceneConfigurationName</key>
+                    <string>Default Configuration</string>
+                    <key>UISceneDelegateClassName</key>
+                    <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+                </dict>
+            </array>
+        </dict>
+    </dict>
+    
+    <!-- Supported Document Types -->
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>public.image</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>jpg</string>
+                    <string>jpeg</string>
+                    <string>png</string>
+                    <string>heic</string>
+                    <string>heif</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

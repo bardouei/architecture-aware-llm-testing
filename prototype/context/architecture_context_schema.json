@@ -1,0 +1,97 @@
+{
+    "system": {
+        "language": "string",
+        "testing_framework": "string"
+    },
+
+    "architecture": {
+        "patterns": [
+            "string"
+        ]
+    },
+
+    "modules": [
+        {
+            "name": "string",
+            "type": "feature|layer|package",
+            "components": [
+                "string"
+            ]
+        }
+    ],
+
+    "components": [
+        {
+            "name": "string",
+
+            "type": "class|protocol",
+
+            "file": "string",
+
+            "module": "string",
+
+            "layer": "Presentation|Domain|Data|Core|Unknown",
+
+            "implements": [
+                "string"
+            ],
+
+            "responsibility": "string",
+
+            "dependencies": [
+                {
+                    "name": "string",
+
+                    "type": "Protocol|Concrete",
+
+                    "mock_required": true,
+
+                    "implementation": [
+                        "string"
+                    ]
+                }
+            ],
+
+            "concurrency": {
+
+                "main_actor": false,
+
+                "async_support": false
+            },
+
+            "testing_strategy": {
+
+                "framework": "string",
+
+                "test_type": "Unit Test|Integration Test",
+
+                "mock_strategy": "Protocol Mock|Concrete Mock|None"
+            }
+        }
+    ],
+
+    "dependency_graph": {
+
+        "nodes": [
+
+            {
+                "id": "string",
+
+                "type": "component|protocol"
+            }
+
+        ],
+
+        "edges": [
+
+            {
+                "from": "string",
+
+                "to": "string",
+
+                "relationship": "depends_on|implemented_by"
+            }
+
+        ]
+    }
+}

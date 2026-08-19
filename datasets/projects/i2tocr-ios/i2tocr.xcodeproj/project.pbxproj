@@ -1,0 +1,796 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 100;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		265F9F292F0A9ECF00513E35 /* MockDocumentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F9F282F0A9ECC00513E35 /* MockDocumentRepository.swift */; };
+		265F9F2B2F0A9EDE00513E35 /* LoadDocumentsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F9F2A2F0A9EDC00513E35 /* LoadDocumentsUseCaseTests.swift */; };
+		265F9F2D2F0A9EF500513E35 /* CreateDocumentFromOCRUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F9F2C2F0A9EF300513E35 /* CreateDocumentFromOCRUseCaseTests.swift */; };
+		265F9F302F0AA8A400513E35 /* HomeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F9F2E2F0AA81500513E35 /* HomeUITests.swift */; };
+		26ACFD7B2FB5C5B5009CAE8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26ACFD7A2FB5C5B5009CAE8B /* Assets.xcassets */; };
+		26ACFD7E2FB5C5E2009CAE8B /* DI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD7D2FB5C5E2009CAE8B /* DI.swift */; };
+		26ACFD802FB5C5E8009CAE8B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD7F2FB5C5E7009CAE8B /* Extensions.swift */; };
+		26ACFD822FB5C5EE009CAE8B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD812FB5C5EE009CAE8B /* Utils.swift */; };
+		26ACFD852FB5C61F009CAE8B /* OCRItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD842FB5C61E009CAE8B /* OCRItem.swift */; };
+		26ACFD872FB5C624009CAE8B /* OCRNetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD862FB5C623009CAE8B /* OCRNetworkModels.swift */; };
+		26ACFD942FB5C730009CAE8B /* OCRUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD932FB5C71C009CAE8B /* OCRUseCases.swift */; };
+		26ACFD962FB5C749009CAE8B /* OCRRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD952FB5C749009CAE8B /* OCRRepositoryProtocol.swift */; };
+		26ACFD992FB5C7AA009CAE8B /* OCRItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD982FB5C7AA009CAE8B /* OCRItemModel.swift */; };
+		26ACFD9C2FB5D2CF009CAE8B /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD9B2FB5D2CE009CAE8B /* OCRService.swift */; };
+		26ACFD9F2FB5D2F2009CAE8B /* OCRRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFD9E2FB5D2F1009CAE8B /* OCRRepository.swift */; };
+		26ACFDA52FB5D32C009CAE8B /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDA42FB5D32C009CAE8B /* OnboardingView.swift */; };
+		26ACFDA72FB5D339009CAE8B /* BiometricAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDA62FB5D339009CAE8B /* BiometricAuthView.swift */; };
+		26ACFDA92FB5D348009CAE8B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDA82FB5D347009CAE8B /* HomeViewModel.swift */; };
+		26ACFDAB2FB5D35B009CAE8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDAA2FB5D35A009CAE8B /* HomeView.swift */; };
+		26ACFDAD2FB5D368009CAE8B /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDAC2FB5D367009CAE8B /* SideMenuView.swift */; };
+		26ACFDAF2FB5D377009CAE8B /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDAE2FB5D376009CAE8B /* DetailView.swift */; };
+		26ACFDB52FB5DF05009CAE8B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDB42FB5DF03009CAE8B /* AppState.swift */; };
+		26ACFDB72FB5DF27009CAE8B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ACFDB62FB5DF26009CAE8B /* RootView.swift */; };
+		4DA9BF442C41874800C5D1F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9BF432C41874800C5D1F0 /* AppDelegate.swift */; };
+		4DA9BF462C41874800C5D1F0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9BF452C41874800C5D1F0 /* SceneDelegate.swift */; };
+		4DA9BF502C41874900C5D1F0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 4DA9BF4F2C41874900C5D1F0 /* Base */; };
+		4DA9BF5B2C41874900C5D1F0 /* i2tocrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9BF5A2C41874900C5D1F0 /* i2tocrTests.swift */; };
+		4DA9BF652C41874900C5D1F0 /* i2tocrUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9BF642C41874900C5D1F0 /* i2tocrUITests.swift */; };
+		4DA9BF672C41874900C5D1F0 /* i2tocrUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9BF662C41874900C5D1F0 /* i2tocrUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4DA9BF572C41874900C5D1F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DA9BF382C41874800C5D1F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4DA9BF3F2C41874800C5D1F0;
+			remoteInfo = i2tocr;
+		};
+		4DA9BF612C41874900C5D1F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DA9BF382C41874800C5D1F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4DA9BF3F2C41874800C5D1F0;
+			remoteInfo = i2tocr;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		265F9F282F0A9ECC00513E35 /* MockDocumentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDocumentRepository.swift; sourceTree = "<group>"; };
+		265F9F2A2F0A9EDC00513E35 /* LoadDocumentsUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadDocumentsUseCaseTests.swift; sourceTree = "<group>"; };
+		265F9F2C2F0A9EF300513E35 /* CreateDocumentFromOCRUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDocumentFromOCRUseCaseTests.swift; sourceTree = "<group>"; };
+		265F9F2E2F0AA81500513E35 /* HomeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUITests.swift; sourceTree = "<group>"; };
+		26ACFD7A2FB5C5B5009CAE8B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		26ACFD7D2FB5C5E2009CAE8B /* DI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DI.swift; sourceTree = "<group>"; };
+		26ACFD7F2FB5C5E7009CAE8B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		26ACFD812FB5C5EE009CAE8B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		26ACFD842FB5C61E009CAE8B /* OCRItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRItem.swift; sourceTree = "<group>"; };
+		26ACFD862FB5C623009CAE8B /* OCRNetworkModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRNetworkModels.swift; sourceTree = "<group>"; };
+		26ACFD932FB5C71C009CAE8B /* OCRUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRUseCases.swift; sourceTree = "<group>"; };
+		26ACFD952FB5C749009CAE8B /* OCRRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRRepositoryProtocol.swift; sourceTree = "<group>"; };
+		26ACFD982FB5C7AA009CAE8B /* OCRItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRItemModel.swift; sourceTree = "<group>"; };
+		26ACFD9B2FB5D2CE009CAE8B /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
+		26ACFD9E2FB5D2F1009CAE8B /* OCRRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRRepository.swift; sourceTree = "<group>"; };
+		26ACFDA42FB5D32C009CAE8B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		26ACFDA62FB5D339009CAE8B /* BiometricAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthView.swift; sourceTree = "<group>"; };
+		26ACFDA82FB5D347009CAE8B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		26ACFDAA2FB5D35A009CAE8B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		26ACFDAC2FB5D367009CAE8B /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
+		26ACFDAE2FB5D376009CAE8B /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		26ACFDB42FB5DF03009CAE8B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		26ACFDB62FB5DF26009CAE8B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		26DC616E2EE092C10037DB26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4DA9BF402C41874800C5D1F0 /* i2tocr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = i2tocr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DA9BF432C41874800C5D1F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4DA9BF452C41874800C5D1F0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		4DA9BF4F2C41874900C5D1F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		4DA9BF562C41874900C5D1F0 /* i2tocrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i2tocrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DA9BF5A2C41874900C5D1F0 /* i2tocrTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = i2tocrTests.swift; sourceTree = "<group>"; };
+		4DA9BF602C41874900C5D1F0 /* i2tocrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i2tocrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DA9BF642C41874900C5D1F0 /* i2tocrUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = i2tocrUITests.swift; sourceTree = "<group>"; };
+		4DA9BF662C41874900C5D1F0 /* i2tocrUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = i2tocrUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4DA9BF3D2C41874800C5D1F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		4DA9BF532C41874900C5D1F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		4DA9BF5D2C41874900C5D1F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		265F9F132F0A984400513E35 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				265F9F152F0A98BD00513E35 /* UseCase */,
+				26ACFD832FB5C5FF009CAE8B /* Repositories */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		265F9F142F0A985E00513E35 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD9D2FB5D2E4009CAE8B /* Repositories */,
+				26ACFD972FB5C79E009CAE8B /* Local */,
+				26ACFD9A2FB5C7C2009CAE8B /* Remote */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		265F9F152F0A98BD00513E35 /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD932FB5C71C009CAE8B /* OCRUseCases.swift */,
+			);
+			path = UseCase;
+			sourceTree = "<group>";
+		};
+		26ACFD7C2FB5C5DA009CAE8B /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD7D2FB5C5E2009CAE8B /* DI.swift */,
+				26ACFD7F2FB5C5E7009CAE8B /* Extensions.swift */,
+				26ACFD812FB5C5EE009CAE8B /* Utils.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		26ACFD832FB5C5FF009CAE8B /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD952FB5C749009CAE8B /* OCRRepositoryProtocol.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		26ACFD8A2FB5C651009CAE8B /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDA02FB5D312009CAE8B /* Onboarding */,
+				26ACFDA32FB5D321009CAE8B /* Auth */,
+				26ACFDA22FB5D31C009CAE8B /* Home */,
+				26ACFDA12FB5D317009CAE8B /* Detail */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		26ACFD972FB5C79E009CAE8B /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD982FB5C7AA009CAE8B /* OCRItemModel.swift */,
+				26ACFD842FB5C61E009CAE8B /* OCRItem.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		26ACFD9A2FB5C7C2009CAE8B /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD9B2FB5D2CE009CAE8B /* OCRService.swift */,
+				26ACFD862FB5C623009CAE8B /* OCRNetworkModels.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		26ACFD9D2FB5D2E4009CAE8B /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFD9E2FB5D2F1009CAE8B /* OCRRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		26ACFDA02FB5D312009CAE8B /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDA42FB5D32C009CAE8B /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		26ACFDA12FB5D317009CAE8B /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDAE2FB5D376009CAE8B /* DetailView.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		26ACFDA22FB5D31C009CAE8B /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDAC2FB5D367009CAE8B /* SideMenuView.swift */,
+				26ACFDAA2FB5D35A009CAE8B /* HomeView.swift */,
+				26ACFDA82FB5D347009CAE8B /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		26ACFDA32FB5D321009CAE8B /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDA62FB5D339009CAE8B /* BiometricAuthView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		4DA9BF372C41874800C5D1F0 = {
+			isa = PBXGroup;
+			children = (
+				4DA9BF422C41874800C5D1F0 /* i2tocr */,
+				4DA9BF592C41874900C5D1F0 /* i2tocrTests */,
+				4DA9BF632C41874900C5D1F0 /* i2tocrUITests */,
+				4DA9BF412C41874800C5D1F0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4DA9BF412C41874800C5D1F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4DA9BF402C41874800C5D1F0 /* i2tocr.app */,
+				4DA9BF562C41874900C5D1F0 /* i2tocrTests.xctest */,
+				4DA9BF602C41874900C5D1F0 /* i2tocrUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4DA9BF422C41874800C5D1F0 /* i2tocr */ = {
+			isa = PBXGroup;
+			children = (
+				26DC616E2EE092C10037DB26 /* Info.plist */,
+				26ACFD7C2FB5C5DA009CAE8B /* Core */,
+				265F9F142F0A985E00513E35 /* Data */,
+				265F9F132F0A984400513E35 /* Domain */,
+				26ACFD8A2FB5C651009CAE8B /* Presentation */,
+				4DDD621A2C4192BC00F2B079 /* Resoures */,
+			);
+			path = i2tocr;
+			sourceTree = "<group>";
+		};
+		4DA9BF592C41874900C5D1F0 /* i2tocrTests */ = {
+			isa = PBXGroup;
+			children = (
+				265F9F2E2F0AA81500513E35 /* HomeUITests.swift */,
+				265F9F2C2F0A9EF300513E35 /* CreateDocumentFromOCRUseCaseTests.swift */,
+				265F9F2A2F0A9EDC00513E35 /* LoadDocumentsUseCaseTests.swift */,
+				265F9F282F0A9ECC00513E35 /* MockDocumentRepository.swift */,
+				4DA9BF5A2C41874900C5D1F0 /* i2tocrTests.swift */,
+			);
+			path = i2tocrTests;
+			sourceTree = "<group>";
+		};
+		4DA9BF632C41874900C5D1F0 /* i2tocrUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4DA9BF642C41874900C5D1F0 /* i2tocrUITests.swift */,
+				4DA9BF662C41874900C5D1F0 /* i2tocrUITestsLaunchTests.swift */,
+			);
+			path = i2tocrUITests;
+			sourceTree = "<group>";
+		};
+		4DDD621A2C4192BC00F2B079 /* Resoures */ = {
+			isa = PBXGroup;
+			children = (
+				26ACFDB62FB5DF26009CAE8B /* RootView.swift */,
+				26ACFDB42FB5DF03009CAE8B /* AppState.swift */,
+				4DA9BF432C41874800C5D1F0 /* AppDelegate.swift */,
+				4DA9BF452C41874800C5D1F0 /* SceneDelegate.swift */,
+				26ACFD7A2FB5C5B5009CAE8B /* Assets.xcassets */,
+				4DA9BF4E2C41874900C5D1F0 /* LaunchScreen.storyboard */,
+			);
+			path = Resoures;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4DA9BF3F2C41874800C5D1F0 /* i2tocr */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DA9BF6A2C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocr" */;
+			buildPhases = (
+				4DA9BF3C2C41874800C5D1F0 /* Sources */,
+				4DA9BF3D2C41874800C5D1F0 /* Frameworks */,
+				4DA9BF3E2C41874800C5D1F0 /* Resources */,
+			);
+			buildRules = (
+			);
+			name = i2tocr;
+			productName = i2tocr;
+			productReference = 4DA9BF402C41874800C5D1F0 /* i2tocr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4DA9BF552C41874900C5D1F0 /* i2tocrTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DA9BF6D2C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocrTests" */;
+			buildPhases = (
+				4DA9BF522C41874900C5D1F0 /* Sources */,
+				4DA9BF532C41874900C5D1F0 /* Frameworks */,
+				4DA9BF542C41874900C5D1F0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4DA9BF582C41874900C5D1F0 /* PBXTargetDependency */,
+			);
+			name = i2tocrTests;
+			productName = i2tocrTests;
+			productReference = 4DA9BF562C41874900C5D1F0 /* i2tocrTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4DA9BF5F2C41874900C5D1F0 /* i2tocrUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DA9BF702C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocrUITests" */;
+			buildPhases = (
+				4DA9BF5C2C41874900C5D1F0 /* Sources */,
+				4DA9BF5D2C41874900C5D1F0 /* Frameworks */,
+				4DA9BF5E2C41874900C5D1F0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4DA9BF622C41874900C5D1F0 /* PBXTargetDependency */,
+			);
+			name = i2tocrUITests;
+			productName = i2tocrUITests;
+			productReference = 4DA9BF602C41874900C5D1F0 /* i2tocrUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4DA9BF382C41874800C5D1F0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					4DA9BF3F2C41874800C5D1F0 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					4DA9BF552C41874900C5D1F0 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 4DA9BF3F2C41874800C5D1F0;
+					};
+					4DA9BF5F2C41874900C5D1F0 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 4DA9BF3F2C41874800C5D1F0;
+					};
+				};
+			};
+			buildConfigurationList = 4DA9BF3B2C41874800C5D1F0 /* Build configuration list for PBXProject "i2tocr" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4DA9BF372C41874800C5D1F0;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = 4DA9BF412C41874800C5D1F0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4DA9BF3F2C41874800C5D1F0 /* i2tocr */,
+				4DA9BF552C41874900C5D1F0 /* i2tocrTests */,
+				4DA9BF5F2C41874900C5D1F0 /* i2tocrUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4DA9BF3E2C41874800C5D1F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				4DA9BF502C41874900C5D1F0 /* Base in Resources */,
+				26ACFD7B2FB5C5B5009CAE8B /* Assets.xcassets in Resources */,
+			);
+		};
+		4DA9BF542C41874900C5D1F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		4DA9BF5E2C41874900C5D1F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4DA9BF3C2C41874800C5D1F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				26ACFD992FB5C7AA009CAE8B /* OCRItemModel.swift in Sources */,
+				26ACFD822FB5C5EE009CAE8B /* Utils.swift in Sources */,
+				26ACFD802FB5C5E8009CAE8B /* Extensions.swift in Sources */,
+				26ACFD962FB5C749009CAE8B /* OCRRepositoryProtocol.swift in Sources */,
+				26ACFD9C2FB5D2CF009CAE8B /* OCRService.swift in Sources */,
+				26ACFD852FB5C61F009CAE8B /* OCRItem.swift in Sources */,
+				4DA9BF442C41874800C5D1F0 /* AppDelegate.swift in Sources */,
+				26ACFDA52FB5D32C009CAE8B /* OnboardingView.swift in Sources */,
+				26ACFDAD2FB5D368009CAE8B /* SideMenuView.swift in Sources */,
+				26ACFDAB2FB5D35B009CAE8B /* HomeView.swift in Sources */,
+				26ACFD942FB5C730009CAE8B /* OCRUseCases.swift in Sources */,
+				26ACFDB72FB5DF27009CAE8B /* RootView.swift in Sources */,
+				26ACFDB52FB5DF05009CAE8B /* AppState.swift in Sources */,
+				26ACFDAF2FB5D377009CAE8B /* DetailView.swift in Sources */,
+				26ACFD872FB5C624009CAE8B /* OCRNetworkModels.swift in Sources */,
+				26ACFD9F2FB5D2F2009CAE8B /* OCRRepository.swift in Sources */,
+				4DA9BF462C41874800C5D1F0 /* SceneDelegate.swift in Sources */,
+				26ACFD7E2FB5C5E2009CAE8B /* DI.swift in Sources */,
+				26ACFDA72FB5D339009CAE8B /* BiometricAuthView.swift in Sources */,
+				26ACFDA92FB5D348009CAE8B /* HomeViewModel.swift in Sources */,
+			);
+		};
+		4DA9BF522C41874900C5D1F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				265F9F2B2F0A9EDE00513E35 /* LoadDocumentsUseCaseTests.swift in Sources */,
+				265F9F2D2F0A9EF500513E35 /* CreateDocumentFromOCRUseCaseTests.swift in Sources */,
+				265F9F292F0A9ECF00513E35 /* MockDocumentRepository.swift in Sources */,
+				4DA9BF5B2C41874900C5D1F0 /* i2tocrTests.swift in Sources */,
+			);
+		};
+		4DA9BF5C2C41874900C5D1F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				265F9F302F0AA8A400513E35 /* HomeUITests.swift in Sources */,
+				4DA9BF652C41874900C5D1F0 /* i2tocrUITests.swift in Sources */,
+				4DA9BF672C41874900C5D1F0 /* i2tocrUITestsLaunchTests.swift in Sources */,
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4DA9BF582C41874900C5D1F0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4DA9BF3F2C41874800C5D1F0 /* i2tocr */;
+			targetProxy = 4DA9BF572C41874900C5D1F0 /* PBXContainerItemProxy */;
+		};
+		4DA9BF622C41874900C5D1F0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4DA9BF3F2C41874800C5D1F0 /* i2tocr */;
+			targetProxy = 4DA9BF612C41874900C5D1F0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4DA9BF4E2C41874900C5D1F0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DA9BF4F2C41874900C5D1F0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4DA9BF682C41874900C5D1F0 /* Debug configuration for PBXProject "i2tocr" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4DA9BF692C41874900C5D1F0 /* Release configuration for PBXProject "i2tocr" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4DA9BF6B2C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocr" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = U848A2NDHM;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = i2tocr/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = I2TOCR;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to capture select images for OCR processing";
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to photo library to select images for OCR processing";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnikbuild.i2tocr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		4DA9BF6C2C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocr" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = U848A2NDHM;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = i2tocr/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = I2TOCR;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to capture select images for OCR processing";
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to photo library to select images for OCR processing";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnikbuild.i2tocr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4DA9BF6E2C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocrTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 629X8QHQXD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnik.i2tocrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/i2tocr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/i2tocr";
+			};
+			name = Debug;
+		};
+		4DA9BF6F2C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocrTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 629X8QHQXD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnik.i2tocrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/i2tocr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/i2tocr";
+			};
+			name = Release;
+		};
+		4DA9BF712C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocrUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 629X8QHQXD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnik.i2tocrUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = i2tocr;
+			};
+			name = Debug;
+		};
+		4DA9BF722C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocrUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 629X8QHQXD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnik.i2tocrUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = i2tocr;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4DA9BF3B2C41874800C5D1F0 /* Build configuration list for PBXProject "i2tocr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DA9BF682C41874900C5D1F0 /* Debug configuration for PBXProject "i2tocr" */,
+				4DA9BF692C41874900C5D1F0 /* Release configuration for PBXProject "i2tocr" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		4DA9BF6A2C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DA9BF6B2C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocr" */,
+				4DA9BF6C2C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocr" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		4DA9BF6D2C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocrTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DA9BF6E2C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocrTests" */,
+				4DA9BF6F2C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocrTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		4DA9BF702C41874900C5D1F0 /* Build configuration list for PBXNativeTarget "i2tocrUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DA9BF712C41874900C5D1F0 /* Debug configuration for PBXNativeTarget "i2tocrUITests" */,
+				4DA9BF722C41874900C5D1F0 /* Release configuration for PBXNativeTarget "i2tocrUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4DA9BF382C41874800C5D1F0 /* Project object */;
+}

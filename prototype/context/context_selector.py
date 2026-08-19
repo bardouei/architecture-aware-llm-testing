@@ -1,162 +1,89 @@
-from typing import Dict, List
-
-
 class ContextSelector:
 
 
     def __init__(
         self,
-        architecture_context: Dict
+        context
     ):
 
-        self.context = architecture_context
+        self.context = context
 
-        self.components = (
-            architecture_context.get(
+
+
+        self.components = {
+
+            component["name"]:
+                component
+
+            for component in context.get(
                 "components",
                 []
             )
-        )
-
-
-
-    def select(
-        self,
-        target_component: str,
-        depth: int = 1
-    ) -> Dict:
-
-
-        target = self.find_component(
-            target_component
-        )
-
-
-        if not target:
-            raise ValueError(
-                f"Component '{target_component}' not found"
-            )
-
-
-        related_components = (
-            self.find_related_components(
-                target_component,
-                depth
-            )
-        )
-
-
-        return {
-
-            "system":
-                self.context.get(
-                    "system",
-                    {}
-                ),
-
-
-            "architecture":
-                self.context.get(
-                    "architecture",
-                    {}
-                ),
-
-
-            "target_component":
-                target,
-
-
-            "related_components":
-                related_components
 
         }
 
 
 
+        self.protocol_details = {
+
+            protocol["name"]:
+                protocol
+
+            for protocol in context.get(
+                "protocols",
+                []
+            )
+
+        }
+
+
+
+        self.protocols = set(
+
+            self.protocol_details.keys()
+
+        )
+
+
+
     # ---------------------------------
-    # Find Target Component
+    # Find component
     # ---------------------------------
 
     def find_component(
         self,
-        name: str
+        name
     ):
 
-
-        for component in self.components:
-
-            if component["name"] == name:
-
-                return component
-
-
-        return None
+        return self.components.get(
+            name
+        )
 
 
 
     # ---------------------------------
-    # Dependency Traversal
+    # Check protocol
     # ---------------------------------
 
-    def find_related_components(
+    def is_protocol(
         self,
-        component_name: str,
-        depth: int
-    ) -> List[Dict]:
-
-
-        visited = set()
-
-        result = []
-
-
-        self._collect_dependencies(
-
-            component_name,
-
-            depth,
-
-            visited,
-
-            result
-
-        )
-
-
-        return result
-
-
-
-    def _collect_dependencies(
-        self,
-        component_name: str,
-        depth: int,
-        visited: set,
-        result: list
+        name
     ):
 
-
-        if depth == 0:
-            return
+        return name in self.protocols
 
 
-        if component_name in visited:
-            return
 
+    # ---------------------------------
+    # Dependencies
+    # ---------------------------------
 
-        visited.add(
-            component_name
-        )
+    def get_dependencies(
+        self,
+        component
+    ):
 
-
-        component = self.find_component(
-            component_name
-        )
-
-
-        if not component:
-            return
-
+        dependencies = []
 
 
         for dependency in component.get(
@@ -164,40 +91,266 @@ class ContextSelector:
             []
         ):
 
+            if isinstance(
+                dependency,
+                dict
+            ):
 
-            dependency_name = (
-                dependency["name"]
-                if isinstance(
-                    dependency,
-                    dict
+                dependencies.append(
+                    dependency
                 )
-                else dependency
+
+
+            else:
+
+                dependencies.append(
+
+                    {
+                        "name":
+                            dependency
+                    }
+
+                )
+
+
+        return dependencies
+
+
+
+    # ---------------------------------
+    # Add protocol node
+    # ---------------------------------
+
+    def add_protocol(
+        self,
+        protocol_name,
+        selected,
+        visited
+    ):
+
+
+        if protocol_name in visited:
+
+            return
+
+
+
+        protocol = self.protocol_details.get(
+            protocol_name
+        )
+
+
+        if protocol:
+
+
+            selected.append(
+
+                {
+
+                    "name":
+                        protocol["name"],
+
+
+                    "type":
+                        "protocol",
+
+
+                    "implemented_by":
+                        protocol.get(
+                            "implemented_by",
+                            []
+                        ),
+
+
+                    "mock_strategy":
+                        protocol.get(
+                            "mock_strategy",
+                            "Protocol Mock"
+                        )
+
+                }
+
             )
 
 
-            dependency_component = (
-                self.find_component(
+        else:
+
+
+            selected.append(
+
+                {
+
+                    "name":
+                        protocol_name,
+
+
+                    "type":
+                        "protocol"
+
+                }
+
+            )
+
+
+        visited.add(
+            protocol_name
+        )
+
+
+
+    # ---------------------------------
+    # Select Context
+    # ---------------------------------
+
+    def select(
+        self,
+        target,
+        depth=3
+    ):
+
+
+        selected = []
+
+        visited = set()
+
+
+
+        def traverse(
+            name,
+            level
+        ):
+
+
+            if level > depth:
+
+                return
+
+
+
+            if name in visited:
+
+                return
+
+
+
+            component = self.find_component(
+                name
+            )
+
+
+
+            # Protocol
+
+            if not component:
+
+
+                if self.is_protocol(
+                    name
+                ):
+
+                    self.add_protocol(
+                        name,
+                        selected,
+                        visited
+                    )
+
+
+                return
+
+
+
+            visited.add(
+                name
+            )
+
+
+            selected.append(
+                component
+            )
+
+
+
+            dependencies = (
+                self.get_dependencies(
+                    component
+                )
+            )
+
+
+
+            for dependency in dependencies:
+
+
+                dependency_name = (
+                    dependency["name"]
+                )
+
+
+                # Add protocol
+
+                if self.is_protocol(
                     dependency_name
-                )
-            )
+                ):
+
+                    self.add_protocol(
+                        dependency_name,
+                        selected,
+                        visited
+                    )
 
 
-            if dependency_component:
+                else:
+
+                    traverse(
+                        dependency_name,
+                        level + 1
+                    )
 
 
-                result.append(
-                    dependency_component
-                )
+
+                # Add implementation
+
+                for implementation in dependency.get(
+                    "implementation",
+                    []
+                ):
 
 
-                self._collect_dependencies(
+                    traverse(
 
-                    dependency_name,
+                        implementation,
 
-                    depth - 1,
+                        level + 1
 
-                    visited,
+                    )
 
-                    result
 
-                )
+
+        traverse(
+            target,
+            0
+        )
+
+
+
+        return {
+
+
+            "target":
+
+                target,
+
+
+            "architecture":
+
+                self.context.get(
+                    "architecture",
+                    {}
+                ),
+
+
+            "selected_components":
+
+                selected
+
+        }

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "projects": [
+    {
+      "id": "swift-sample-app",
+      "kind": "controlled_fixture",
+      "path": "datasets/fixtures/swift-sample-app",
+      "language": "Swift",
+      "architectures": ["MVVM", "Clean Architecture"],
+      "xcode_project": "SwiftSampleApp.xcodeproj",
+      "scheme": "SwiftSampleApp",
+      "unit_test_target": "SwiftSampleAppTests",
+      "source_files": 8,
+      "test_files": 3,
+      "candidate_components": ["LoginViewModel"],
+      "eligibility": "validated"
+    },
+    {
+      "id": "i2tocr-ios",
+      "kind": "real_world_project",
+      "path": "datasets/projects/i2tocr-ios",
+      "language": "Swift",
+      "architectures": ["MVVM", "Clean Architecture", "Dependency Injection"],
+      "xcode_project": "i2tocr.xcodeproj",
+      "scheme": "i2tocr",
+      "unit_test_target": "i2tocrTests",
+      "source_files": 25,
+      "test_files": 8,
+      "candidate_components": [
+        "HomeViewModel",
+        "DetailViewModel",
+        "BiometricAuthViewModel"
+      ],
+      "source": {
+        "url": "https://github.com/i2tOCR/i2tocr-iOS.git",
+        "commit": "b35d9edeac0a95b74e1c9288b4af8dbdf7d3336a",
+        "commit_date": "2026-07-09T17:38:12+03:30"
+      },
+      "eligibility": "ineligible_incomplete_snapshot_and_unknown_license",
+      "notes": [
+        "No license file was present in the imported commit.",
+        "Xcode build fails because Resoures/Assets.xcassets and AppIcon are missing.",
+        "Some existing unit tests reference types not found by the current source scan.",
+        "HomeViewModelTests.swift is empty."
+      ]
+    }
+  ]
+}

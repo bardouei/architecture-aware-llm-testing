@@ -21,9 +21,10 @@ class SwiftParser:
 
 
 
-    def __init__(self, files):
+    def __init__(self, files, project_root=None):
 
         self.files = files
+        self.project_root = Path(project_root).resolve() if project_root else None
 
 
 
@@ -64,14 +65,14 @@ class SwiftParser:
 
 
 
-            classes = self.extract_classes(
+            types = self.extract_types(
                 content,
-                path.name
+                self.display_path(path)
             )
 
 
             result["components"].extend(
-                classes
+                types
             )
 
 
@@ -89,7 +90,21 @@ class SwiftParser:
             content
         )
 
-    def extract_classes(
+    def display_path(self, path):
+
+        if self.project_root:
+
+            try:
+
+                return str(path.resolve().relative_to(self.project_root))
+
+            except ValueError:
+
+                pass
+
+        return str(path)
+
+    def extract_types(
         self,
         content,
         filename
@@ -98,18 +113,19 @@ class SwiftParser:
         components = []
 
 
-        class_pattern = (
-            r"(?:final\s+)?class\s+(\w+)(?:\s*:\s*([\w,\s]+))?"
+        type_pattern = (
+            r"(?:final\s+)?(class|struct|actor)\s+(\w+)"
+            r"(?:\s*:\s*([\w,\s]+))?"
         )
 
 
-        classes = re.findall(
-            class_pattern,
+        types = re.findall(
+            type_pattern,
             content
         )
 
 
-        for class_name, inheritance in classes:
+        for type_kind, type_name, inheritance in types:
 
 
             implements = []
@@ -142,7 +158,7 @@ class SwiftParser:
             dependencies = (
                 self.extract_dependencies(
                     content,
-                    class_name
+                    type_name
                 )
             )
 
@@ -150,9 +166,9 @@ class SwiftParser:
 
             components.append({
 
-                "name": class_name,
+                "name": type_name,
 
-                "type": "class",
+                "type": type_kind,
 
                 "file": filename,
 

@@ -1,122 +1,73 @@
+"""Command-line entry point for Swift repository architecture analysis."""
+
+import argparse
 import json
 from pathlib import Path
 
-from scanner import RepositoryScanner
-from swift_parser import SwiftParser
-from implementation_mapper import ImplementationMapper
+from prototype.analyzer.implementation_mapper import ImplementationMapper
+from prototype.analyzer.scanner import RepositoryScanner
+from prototype.analyzer.swift_parser import SwiftParser
 
 
-PROJECT_PATH = "../../examples/SwiftSampleApp"
+def analyze_repository(project_path, output_path):
+    project = Path(project_path).resolve()
+    output = Path(output_path).resolve()
+    if not project.exists():
+        raise FileNotFoundError(f"Dataset project not found: {project}")
+    output.mkdir(parents=True, exist_ok=True)
+
+    scanner = RepositoryScanner(project)
+    source_paths = scanner.scan_files()
+    metadata = {
+        "project": project.name,
+        "files": scanner.scan_files(relative=True),
+        "modules": scanner.scan_modules(),
+    }
+    architecture = SwiftParser(
+        source_paths["source_files"], project_root=project
+    ).parse()
+    mapping = ImplementationMapper(architecture["components"]).build_mapping()
+
+    artifacts = {
+        "repository_metadata.json": metadata,
+        "architecture_components.json": architecture,
+        "implementation_mapping.json": mapping,
+    }
+    for filename, content in artifacts.items():
+        (output / filename).write_text(json.dumps(content, indent=2))
+    return artifacts
 
 
-# -----------------------------
-# Output directory
-# -----------------------------
-
-output_path = Path("output")
-
-output_path.mkdir(
-    exist_ok=True
-)
-
-
-# -----------------------------
-# Repository Scanning
-# -----------------------------
-
-scanner = RepositoryScanner(
-    PROJECT_PATH
-)
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Extract architecture metadata from a Swift project"
+    )
+    parser.add_argument("project", type=Path, help="Path to the dataset project")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Directory for generated JSON artifacts",
+    )
+    return parser.parse_args()
 
 
-files = scanner.scan_files()
-
-
-metadata = {
-
-    "files": files,
-
-    "modules": scanner.scan_modules()
-
-}
-
-
-with open(
-    output_path / "repository_metadata.json",
-    "w"
-) as file:
-
-    json.dump(
-        metadata,
-        file,
-        indent=4
+def main():
+    arguments = parse_args()
+    result = analyze_repository(arguments.project, arguments.output)
+    print(
+        json.dumps(
+            {
+                "source_files": len(result["repository_metadata.json"]["files"]["source_files"]),
+                "test_files": len(result["repository_metadata.json"]["files"]["test_files"]),
+                "components": len(result["architecture_components.json"]["components"]),
+                "protocols": len(result["architecture_components.json"]["protocols"]),
+                "output": str(arguments.output.resolve()),
+            },
+            indent=2,
+        )
     )
 
 
-print(
-    "Repository scanned successfully"
-)
-
-
-
-# -----------------------------
-# Swift Parsing
-# -----------------------------
-
-parser = SwiftParser(
-    files["source_files"]
-)
-
-
-architecture_components = parser.parse()
-
-
-
-with open(
-    output_path / "architecture_components.json",
-    "w"
-) as file:
-
-    json.dump(
-        architecture_components,
-        file,
-        indent=4
-    )
-
-
-print(
-    "Swift analysis completed"
-)
-
-
-
-# -----------------------------
-# Implementation Mapping
-# -----------------------------
-
-mapper = ImplementationMapper(
-    architecture_components["components"]
-)
-
-
-implementation_mapping = (
-    mapper.build_mapping()
-)
-
-
-
-with open(
-    output_path / "implementation_mapping.json",
-    "w"
-) as file:
-
-    json.dump(
-        implementation_mapping,
-        file,
-        indent=4
-    )
-
-
-print(
-    "Implementation mapping completed"
-)
+if __name__ == "__main__":
+    main()

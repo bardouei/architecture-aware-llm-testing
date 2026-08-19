@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "6AB9EAEA-5B57-4023-918F-B61C82DF1F4F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:i2tocr.xcodeproj",
+        "identifier" : "4DA9BF552C41874900C5D1F0",
+        "name" : "i2tocrTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:i2tocr.xcodeproj",
+        "identifier" : "4DA9BF5F2C41874900C5D1F0",
+        "name" : "i2tocrUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

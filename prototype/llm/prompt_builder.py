@@ -1,67 +1,46 @@
-from pathlib import Path
+import json
+
 
 
 class PromptBuilder:
 
 
-    def __init__(self):
-
-        self.template_path = (
-            Path(__file__).parent /
-            "templates"
-        )
-
-
-
-    def load_template(
+    def __init__(
         self,
-        name
+        template
     ):
 
-        path = (
-            self.template_path /
-            name
-        )
-
-
-        return path.read_text()
+        self.template = template
 
 
 
-    def build_baseline_prompt(
+
+    def build(
         self,
+        architecture_context,
         source_code
     ):
 
 
-        template = self.load_template(
-            "baseline_prompt.txt"
+        prompt = self.template.replace(
+
+            "{{ARCHITECTURE_CONTEXT}}",
+
+            json.dumps(
+                architecture_context,
+                indent=4
+            )
+
+        )
+
+
+        prompt = prompt.replace(
+
+            "{{SOURCE_CODE}}",
+
+            source_code
+
         )
 
 
-        return template.format(
-            source_code=source_code
-        )
-
-
-
-    def build_architecture_prompt(
-        self,
-        source_code,
-        architecture_context
-    ):
-
-
-        template = self.load_template(
-            "architecture_prompt.txt"
-        )
-
-
-        return template.format(
-
-            source_code=source_code,
-
-            architecture_context=
-                architecture_context
-
-        )
+        return prompt

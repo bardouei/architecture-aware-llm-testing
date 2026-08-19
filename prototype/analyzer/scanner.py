@@ -5,19 +5,22 @@ class RepositoryScanner:
 
 
     def __init__(self, project_path: str):
-        self.project_path = Path(project_path)
+        self.project_path = Path(project_path).resolve()
 
 
-
-    def scan_files(self):
+    def scan_files(self, relative=False):
 
         source_files = []
         test_files = []
 
 
-        for file in self.project_path.rglob("*.swift"):
+        for file in sorted(self.project_path.rglob("*.swift")):
 
-            file_path = str(file)
+            file_path = (
+                str(file.relative_to(self.project_path))
+                if relative
+                else str(file)
+            )
 
 
             if self.is_test_file(file):
@@ -66,7 +69,7 @@ class RepositoryScanner:
             modules.add(folder.name)
 
 
-        return list(modules)
+        return sorted(modules)
 
 
 
@@ -79,7 +82,7 @@ class RepositoryScanner:
 
 
         return (
-            "test" in parts
+            any(part == "tests" or part.endswith("tests") for part in parts)
             or
             file.name.endswith("Tests.swift")
         )
