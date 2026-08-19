@@ -90,6 +90,17 @@ python experiments/generate_groq_pilot.py \
   --experiment-id groq-smoke-001
 ```
 
+If a rate limit interrupts a paired run after one condition was saved, resume it
+without regenerating completed observations:
+
+```bash
+python experiments/generate_groq_pilot.py \
+  --condition both \
+  --runs 1 \
+  --experiment-id groq-smoke-001 \
+  --resume
+```
+
 The ignored `artifacts/generations/groq-smoke-001/` directory contains the exact
 prompt, raw response, cleaned Swift test, hashes, usage, latency, selected
 architecture context, and experiment manifest. Reasoning blocks such as

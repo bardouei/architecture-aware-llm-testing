@@ -1,6 +1,11 @@
 import unittest
 
-from experiments.generate_groq_pilot import REQUEST_SETTINGS, build_prompt, sha256
+from experiments.generate_groq_pilot import (
+    REQUEST_SETTINGS,
+    build_prompt,
+    sha256,
+    validate_resume_manifest,
+)
 
 
 class GroqPilotTests(unittest.TestCase):
@@ -22,6 +27,34 @@ class GroqPilotTests(unittest.TestCase):
         self.assertEqual(REQUEST_SETTINGS["temperature"], 0.6)
         self.assertEqual(REQUEST_SETTINGS["reasoning_format"], "hidden")
         self.assertEqual(REQUEST_SETTINGS["reasoning_effort"], "none")
+
+    def test_resume_rejects_changed_controls(self):
+        expected = {
+            "experiment_id": "pilot",
+            "dataset_id": "fixture",
+            "provider": "groq",
+            "requested_model": "model-a",
+            "conditions": ["baseline"],
+            "runs_per_condition": 1,
+            "request_settings": {"temperature": 0.6},
+        }
+        existing = dict(expected, requested_model="model-b")
+
+        with self.assertRaisesRegex(ValueError, "requested_model"):
+            validate_resume_manifest(existing, expected)
+
+    def test_resume_accepts_identical_controls(self):
+        manifest = {
+            "experiment_id": "pilot",
+            "dataset_id": "fixture",
+            "provider": "groq",
+            "requested_model": "model-a",
+            "conditions": ["baseline", "architecture_aware"],
+            "runs_per_condition": 1,
+            "request_settings": REQUEST_SETTINGS,
+        }
+
+        validate_resume_manifest(manifest, manifest.copy())
 
 
 if __name__ == "__main__":

@@ -40,6 +40,27 @@ def sha256(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
 
 
+def validate_resume_manifest(existing: dict, expected: dict) -> None:
+    """Reject resuming into an experiment created with different controls."""
+    controlled_fields = (
+        "experiment_id",
+        "dataset_id",
+        "provider",
+        "requested_model",
+        "conditions",
+        "runs_per_condition",
+        "request_settings",
+    )
+    mismatches = [
+        field for field in controlled_fields if existing.get(field) != expected.get(field)
+    ]
+    if mismatches:
+        raise ValueError(
+            "Cannot resume experiment with different settings: "
+            + ", ".join(mismatches)
+        )
+
+
 def build_prompt(condition: str, source: str, context: dict) -> tuple[str, str]:
     template = TEMPLATES[condition].read_text()
     prompt_context = context if condition == "architecture_aware" else {}
@@ -92,6 +113,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--experiment-id")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Keep completed runs and generate only missing runs",
+    )
     return parser.parse_args()
 
 
@@ -103,7 +129,7 @@ def main() -> None:
         "pilot-%Y%m%dT%H%M%SZ"
     )
     output = ROOT / "artifacts/generations" / experiment_id
-    if output.exists():
+    if output.exists() and not arguments.resume:
         raise SystemExit(f"Experiment output already exists: {output}")
 
     conditions = (
@@ -120,12 +146,6 @@ def main() -> None:
     except ValueError as error:
         raise SystemExit(f"Configuration error: {error}") from error
 
-    context = {}
-    if "architecture_aware" in conditions:
-        context = build_architecture_context(
-            PROJECT, TARGET, output / "architecture-context"
-        )
-
     source = SOURCE.read_text()
     manifest = {
         "experiment_id": experiment_id,
@@ -138,10 +158,45 @@ def main() -> None:
         "request_settings": REQUEST_SETTINGS,
     }
     output.mkdir(parents=True, exist_ok=True)
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    manifest_path = output / "manifest.json"
+    if arguments.resume:
+        if not manifest_path.exists():
+            raise SystemExit(f"Cannot resume without manifest: {manifest_path}")
+        try:
+            validate_resume_manifest(json.loads(manifest_path.read_text()), manifest)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
+    else:
+        manifest_path.write_text(json.dumps(manifest, indent=2))
+
+    context_path = output / "architecture-context/llm-context.json"
+    context = {}
+    if arguments.resume and context_path.exists():
+        context = json.loads(context_path.read_text())
+    elif "architecture_aware" in conditions:
+        context = build_architecture_context(
+            PROJECT, TARGET, output / "architecture-context"
+        )
 
     for condition in conditions:
         for run_index in range(1, arguments.runs + 1):
+            run_directory = output / condition / f"run-{run_index:03d}"
+            if arguments.resume and run_directory.exists():
+                required = {
+                    "prompt.txt",
+                    "raw-response.txt",
+                    "generated-test.swift",
+                    "metadata.json",
+                }
+                present = {
+                    path.name for path in run_directory.iterdir() if path.is_file()
+                }
+                if not required.issubset(present):
+                    raise SystemExit(
+                        f"Cannot resume incomplete run directory: {run_directory}"
+                    )
+                print(f"Kept {run_directory.relative_to(ROOT)}")
+                continue
             try:
                 run_directory = generate_run(
                     client, condition, run_index, output, source, context
