@@ -19,7 +19,11 @@ class FakeCompletions:
         return SimpleNamespace(
             id="groq-response-1",
             model="test-model",
-            choices=[SimpleNamespace(message=SimpleNamespace(content="OK"))],
+            choices=[
+                SimpleNamespace(
+                    message=SimpleNamespace(content="OK"), finish_reason="stop"
+                )
+            ],
             usage=Usage(),
         )
 
@@ -58,6 +62,7 @@ class GroqClientTests(unittest.TestCase):
             temperature=0.6,
             max_completion_tokens=4096,
             reasoning_format="hidden",
+            reasoning_effort="none",
         )
 
         client.generate("generate")
@@ -65,11 +70,13 @@ class GroqClientTests(unittest.TestCase):
         self.assertEqual(completions.arguments["temperature"], 0.6)
         self.assertEqual(completions.arguments["max_completion_tokens"], 4096)
         self.assertEqual(
-            completions.arguments["extra_body"], {"reasoning_format": "hidden"}
+            completions.arguments["extra_body"],
+            {"reasoning_format": "hidden", "reasoning_effort": "none"},
         )
         self.assertEqual(
             client.last_metadata["request_settings"], client.request_settings
         )
+        self.assertEqual(client.last_metadata["finish_reason"], "stop")
 
     def test_requires_api_key_for_real_client(self):
         with patch.dict("os.environ", {}, clear=True):

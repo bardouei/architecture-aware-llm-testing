@@ -18,6 +18,13 @@ import XCTest
             "import XCTest\nfinal class Tests {}\n",
         )
 
+    def test_removes_unclosed_opening_fence_from_truncated_output(self):
+        raw = "```swift\nimport XCTest\nfinal class Tests"
+
+        self.assertEqual(
+            clean_generated_code(raw), "import XCTest\nfinal class Tests\n"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

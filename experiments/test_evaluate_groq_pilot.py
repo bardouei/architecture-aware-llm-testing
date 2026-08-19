@@ -56,13 +56,17 @@ class GeneratedPilotEvaluationTests(unittest.TestCase):
                         {
                             "application_build_success": True,
                             "generated_suite_success": True,
+                            "tests_executed": 2,
                             "target_coverage": 90,
                             "mutation": {"score": score},
                         }
                     )
                 )
             report = build_report(experiment)
-            self.assertIn("| baseline | run-001 | pass | pass | 90.00% | 25.00% |", report)
+            self.assertIn(
+                "| baseline | run-001 | pass | pass | 2 | 90.00% | 25.00% |",
+                report,
+            )
             self.assertIn("| architecture_aware | run-001", report)
 
 

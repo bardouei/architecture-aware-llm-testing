@@ -21,6 +21,7 @@ class GroqPilotTests(unittest.TestCase):
     def test_pilot_uses_controlled_qwen_settings(self):
         self.assertEqual(REQUEST_SETTINGS["temperature"], 0.6)
         self.assertEqual(REQUEST_SETTINGS["reasoning_format"], "hidden")
+        self.assertEqual(REQUEST_SETTINGS["reasoning_effort"], "none")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -53,10 +54,21 @@ class TestRunner:
             result = subprocess.run(
                 self.command(), capture_output=True, text=True, timeout=600
             )
+            output = result.stdout + "\n" + result.stderr
+            tests_executed = len(
+                re.findall(
+                    r"Test [Cc]ase .*? (?:passed|failed|skipped)",
+                    output,
+                )
+            )
             response = {
-                "success": result.returncode == 0,
-                "output": (result.stdout + "\n" + result.stderr)[-5000:],
+                "success": result.returncode == 0 and tests_executed > 0,
+                "xcode_success": result.returncode == 0,
+                "tests_executed": tests_executed,
+                "output": output[-5000:],
             }
+            if result.returncode == 0 and tests_executed == 0:
+                response["error"] = "Xcode succeeded but executed zero tests"
             if self.result_bundle:
                 response["result_bundle"] = str(self.result_bundle)
             return response

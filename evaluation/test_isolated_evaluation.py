@@ -23,12 +23,26 @@ class TestRunnerTests(unittest.TestCase):
 
     @patch("evaluation.test_runner.subprocess.run")
     def test_reports_xcode_result(self, run):
-        run.return_value = subprocess.CompletedProcess([], 0, "passed", "")
+        run.return_value = subprocess.CompletedProcess(
+            [], 0, "Test case 'Example.testOne()' passed", ""
+        )
 
         result = TestRunner("Sample.xcodeproj").run()
 
         self.assertTrue(result["success"])
         self.assertIn("passed", result["output"])
+        self.assertEqual(result["tests_executed"], 1)
+
+    @patch("evaluation.test_runner.subprocess.run")
+    def test_rejects_successful_xcode_run_with_zero_tests(self, run):
+        run.return_value = subprocess.CompletedProcess([], 0, "Testing started", "")
+
+        result = TestRunner("Sample.xcodeproj").run()
+
+        self.assertFalse(result["success"])
+        self.assertTrue(result["xcode_success"])
+        self.assertEqual(result["tests_executed"], 0)
+        self.assertIn("zero tests", result["error"])
 
 
 class CoverageAnalyzerTests(unittest.TestCase):

@@ -89,6 +89,7 @@ def evaluate_generated_test(generated_test: Path, workspace_root: Path) -> dict:
     return {
         "application_build_success": application_build.get("success", False),
         "generated_suite_success": suite.get("success", False),
+        "tests_executed": suite.get("tests_executed", 0),
         "target_coverage": coverage.get("coverage", 0),
         "mutation": compact_mutation(mutation),
         "diagnostics": {
@@ -105,20 +106,21 @@ def build_report(experiment: Path) -> str:
         for evaluation_path in evaluations:
             result = json.loads(evaluation_path.read_text())
             rows.append(
-                "| {condition} | {run} | {build} | {tests} | {coverage:.2f}% "
+                "| {condition} | {run} | {build} | {suite} | {count} | {coverage:.2f}% "
                 "| {mutation:.2f}% |".format(
                     condition=condition,
                     run=evaluation_path.parent.name,
                     build="pass" if result["application_build_success"] else "fail",
-                    tests="pass" if result["generated_suite_success"] else "fail",
+                    suite="pass" if result["generated_suite_success"] else "fail",
+                    count=result.get("tests_executed", 0),
                     coverage=result["target_coverage"],
                     mutation=result["mutation"]["score"],
                 )
             )
     return """# Real Groq Pilot Evaluation
 
-| Condition | Run | App build | Generated suite | Coverage | Mutation score |
-|---|---|---:|---:|---:|---:|
+| Condition | Run | App build | Generated suite | Tests run | Coverage | Mutation score |
+|---|---|---:|---:|---:|---:|---:|
 {rows}
 
 Results are per-generation observations. Failed or uncompilable suites remain in
@@ -161,6 +163,7 @@ def main() -> None:
             print(
                 f"{condition}/{generated_test.parent.name}: "
                 f"tests={'pass' if result['generated_suite_success'] else 'fail'}, "
+                f"executed={result['tests_executed']}, "
                 f"coverage={result['target_coverage']:.2f}%, "
                 f"mutation={result['mutation']['score']:.2f}%"
             )

@@ -76,9 +76,10 @@ python experiments/check_groq_connection.py
 
 The Groq adapter uses its OpenAI-compatible chat-completions endpoint and records
 request ID, resolved model, latency, token usage, provider, and endpoint metadata.
-The Qwen pilot fixes temperature at `0.6`, caps completion at 4096 tokens, and asks
-Groq to hide reasoning output. These settings are persisted in every experiment
-manifest and run metadata.
+The Qwen pilot fixes temperature at `0.6`, disables reasoning for this constrained
+code-only task, caps completion at 4096 tokens, and asks Groq to hide any reasoning
+output. These settings and the response finish reason are persisted in every
+experiment manifest and run metadata.
 
 After the connection check succeeds, generate one real paired pilot:
 
@@ -108,6 +109,8 @@ injects exactly one generated suite, and then runs application build, XCTest,
 target-file coverage, and the identical restore-safe mutant set. It writes
 `evaluation.json` beside each generation and a combined `evaluation-report.md`.
 Failed generations are retained as failures rather than discarded.
+An Xcode exit code of zero is not sufficient: a suite passes only when at least one
+XCTest case actually executes.
 
 Run Python tests:
 

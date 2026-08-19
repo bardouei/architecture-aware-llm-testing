@@ -21,6 +21,7 @@ class GroqClient(LLMClient):
         temperature: Optional[float] = None,
         max_completion_tokens: Optional[int] = None,
         reasoning_format: Optional[str] = None,
+        reasoning_effort: Optional[str] = None,
     ) -> None:
         self.model = model or os.environ.get("AALLT_MODEL")
         if not self.model:
@@ -45,6 +46,7 @@ class GroqClient(LLMClient):
             "temperature": temperature,
             "max_completion_tokens": max_completion_tokens,
             "reasoning_format": reasoning_format,
+            "reasoning_effort": reasoning_effort,
         }
         self.last_metadata: dict[str, Any] = {}
 
@@ -60,10 +62,13 @@ class GroqClient(LLMClient):
             request["max_completion_tokens"] = self.request_settings[
                 "max_completion_tokens"
             ]
-        if self.request_settings["reasoning_format"] is not None:
-            request["extra_body"] = {
-                "reasoning_format": self.request_settings["reasoning_format"]
-            }
+        reasoning_options = {
+            key: self.request_settings[key]
+            for key in ("reasoning_format", "reasoning_effort")
+            if self.request_settings[key] is not None
+        }
+        if reasoning_options:
+            request["extra_body"] = reasoning_options
         response = self.client.chat.completions.create(**request)
         elapsed_ms = round((self.clock() - started) * 1000, 2)
         usage = getattr(response, "usage", None)
@@ -75,5 +80,6 @@ class GroqClient(LLMClient):
             "usage": usage.model_dump() if hasattr(usage, "model_dump") else usage,
             "base_url": self.BASE_URL,
             "request_settings": self.request_settings,
+            "finish_reason": getattr(response.choices[0], "finish_reason", None),
         }
         return response.choices[0].message.content or ""

@@ -28,6 +28,7 @@ REQUEST_SETTINGS = {
     "temperature": 0.6,
     "max_completion_tokens": 4096,
     "reasoning_format": "hidden",
+    "reasoning_effort": "none",
 }
 TEMPLATES = {
     "baseline": ROOT / "prototype/llm/templates/baseline_prompt.txt",
